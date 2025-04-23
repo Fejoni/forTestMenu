@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "85c1d2065f70e38b0d6bf66559fb13c5",
+    "content-hash": "26a03469ea887a5a5fb8c1fd5c52cf84",
     "packages": [
         {
             "name": "brick/math",
@@ -1521,16 +1521,16 @@
         },
         {
             "name": "league/commonmark",
-            "version": "2.6.1",
+            "version": "2.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/commonmark.git",
-                "reference": "d990688c91cedfb69753ffc2512727ec646df2ad"
+                "reference": "06c3b0bf2540338094575612f4a1778d0d2d5e94"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/d990688c91cedfb69753ffc2512727ec646df2ad",
-                "reference": "d990688c91cedfb69753ffc2512727ec646df2ad",
+                "url": "https://api.github.com/repos/thephpleague/commonmark/zipball/06c3b0bf2540338094575612f4a1778d0d2d5e94",
+                "reference": "06c3b0bf2540338094575612f4a1778d0d2d5e94",
                 "shasum": ""
             },
             "require": {
@@ -1624,7 +1624,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2024-12-29T14:10:59+00:00"
+            "time": "2025-04-18T21:09:27+00:00"
         },
         {
             "name": "league/config",
@@ -5632,6 +5632,59 @@
                 "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/v2.3.0"
             },
             "time": "2024-12-21T16:25:41+00:00"
+        },
+        {
+            "name": "vlsv/telegram-data-validator",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/skodnik/telegram-data-validator.git",
+                "reference": "9a8ddcd9de89ab1363816df172023ad4bb19b42d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/skodnik/telegram-data-validator/zipball/9a8ddcd9de89ab1363816df172023ad4bb19b42d",
+                "reference": "9a8ddcd9de89ab1363816df172023ad4bb19b42d",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^8.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^3.8",
+                "laravel/pint": "^0.2.3",
+                "phpunit/phpunit": "^9.5.0|^10"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Vlsv\\TelegramInitDataValidator\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Evgeny Vlasov",
+                    "email": "vlasov.evgeny@gmail.com"
+                }
+            ],
+            "description": "The Telegram Data Validator is a PHP library for validating the integrity of initData received from a Telegram mini-application. It uses HMAC-SHA-256 for data integrity checks.",
+            "keywords": [
+                "api",
+                "initData",
+                "sha-256",
+                "telegram",
+                "telegram bot",
+                "webapp"
+            ],
+            "support": {
+                "issues": "https://github.com/skodnik/telegram-data-validator/issues",
+                "source": "https://github.com/skodnik/telegram-data-validator/tree/v1.0.4"
+            },
+            "time": "2024-01-13T21:24:42+00:00"
         },
         {
             "name": "vlucas/phpdotenv",

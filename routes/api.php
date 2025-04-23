@@ -64,8 +64,6 @@ Route::prefix('v1')->group(function () {
             });
         });
     });
-
-    Route::prefix('telegram')->group(function () {
-
-    });
 });
+
+require_once __DIR__ . '/telegram.php';

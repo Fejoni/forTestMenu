@@ -24,9 +24,9 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'telegram_id' => $this->telegram_id,
-            'name' => $this->name,
-            'role' => $this->role,
-            'email' => $this->email
+            'name' => $this->name ?? null,
+            'role' => $this->role ?? 0,
+            'email' => $this->email ?? null
         ];
     }
 }
