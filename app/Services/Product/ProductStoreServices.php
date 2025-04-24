@@ -2,7 +2,7 @@
 
 namespace App\Services\Product;
 
-use App\Models\Product;
+use App\Models\Product\Product;
 
 class ProductStoreServices extends ProductServices
 {

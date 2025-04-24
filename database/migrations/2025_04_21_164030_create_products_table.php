@@ -12,14 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->id();
+            $table->uuid()->primary();
             $table->string('name');
             $table->string('image');
-            $table->foreignId('unit_id')->constrained('units')->onDelete('cascade');
-            $table->foreignId('categories_id')->constrained('categories')->onDelete('cascade');
-            $table->foreignId('divisions_id')->constrained('divisions')->onDelete('cascade');
+
+            $table->uuid('unit_id');
+            $table->uuid('categories_id');
+            $table->uuid('divisions_id');
+
+            $table->foreign('unit_id')->references('uuid')->on('product_units')->onDelete('cascade');
+            $table->foreign('categories_id')->references('uuid')->on('product_categories')->onDelete('cascade');
+            $table->foreign('divisions_id')->references('uuid')->on('product_divisions')->onDelete('cascade');
+
             $table->timestamps();
         });
+
     }
 
     /**

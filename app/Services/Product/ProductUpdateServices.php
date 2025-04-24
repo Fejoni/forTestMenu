@@ -2,7 +2,7 @@
 
 namespace App\Services\Product;
 
-use App\Models\Product;
+use App\Models\Product\Product;
 
 class ProductUpdateServices extends ProductServices
 {
@@ -13,7 +13,7 @@ class ProductUpdateServices extends ProductServices
 
     protected function update(array $data)
     {
-        $product = Product::with('shops')->findOrFail($data['id']);
+        $product = Product::with('shops')->where('uuid', $data['id'])->firstOrFail();
 
         $product->update([
             'name' => $data['name'],

@@ -2,13 +2,13 @@
 
 namespace App\Http\Resources\Product;
 
-use App\Http\Resources\Category\CategoryResource;
-use App\Http\Resources\Division\DivisionResource;
-use App\Http\Resources\Shop\ShopResource;
-use App\Http\Resources\Unit\UnitResource;
-use App\Models\Category;
-use App\Models\Division;
-use App\Models\Unit;
+use App\Http\Resources\Product\Category\CategoryResource;
+use App\Http\Resources\Product\Division\DivisionResource;
+use App\Http\Resources\Product\Shop\ShopResource;
+use App\Http\Resources\Product\Unit\UnitResource;
+use App\Models\Product\ProductCategory;
+use App\Models\Product\ProductDivision;
+use App\Models\Product\ProductUnit;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -31,12 +31,12 @@ class ProductResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->uuid,
             'name' => $this->name,
             'image' => $this->image,
-            'unit' => new UnitResource(Unit::query()->where('id', $this->unit_id)->first()),
-            'category' => new CategoryResource(Category::query()->where('id', $this->categories_id)->first()),
-            'division' => new DivisionResource(Division::query()->where('id', $this->divisions_id)->first()),
+            'unit' => new UnitResource(ProductUnit::query()->where('uuid', $this->unit_id)->first()),
+            'category' => new CategoryResource(ProductCategory::query()->where('uuid', $this->categories_id)->first()),
+            'division' => new DivisionResource(ProductDivision::query()->where('uuid', $this->divisions_id)->first()),
             'shops' => ShopResource::collection($this->shops),
         ];
     }

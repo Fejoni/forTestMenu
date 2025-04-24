@@ -11,12 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_shop', function (Blueprint $table) {
+        Schema::create('product_product_shop', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained()->onDelete('cascade');
-            $table->foreignId('shop_id')->constrained()->onDelete('cascade');
+
+            $table->uuid('product_uuid');
+            $table->uuid('product_shop_uuid');
+
+            $table->foreign('product_uuid')->references('uuid')->on('products')->onDelete('cascade');
+            $table->foreign('product_shop_uuid')->references('uuid')->on('product_shops')->onDelete('cascade');
+
             $table->timestamps();
         });
+
     }
 
     /**

@@ -1,16 +1,15 @@
 <?php
 
-namespace App\Http\Resources\Division;
+namespace App\Http\Resources\Product\Unit;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @property integer $id
  * @property string $name
- * @property string $image
+ * @property int $id
  */
-class DivisionResource extends JsonResource
+class UnitResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,9 +19,8 @@ class DivisionResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
-            'name' => $this->name,
-            'image' => $this->image,
+            'id' => $this->uuid,
+            'name' => $this->name
         ];
     }
 }

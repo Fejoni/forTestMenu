@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Category;
+namespace App\Http\Resources\Product\Division;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -10,7 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property string $name
  * @property string $image
  */
-class CategoryResource extends JsonResource
+class DivisionResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -20,9 +20,9 @@ class CategoryResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->uuid,
             'name' => $this->name,
-            'image' => $this->image
+            'image' => $this->image,
         ];
     }
 }

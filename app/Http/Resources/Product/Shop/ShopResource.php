@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Resources\Shop;
+namespace App\Http\Resources\Product\Shop;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -19,7 +19,7 @@ class ShopResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->id,
+            'id' => $this->uuid,
             'name' => $this->name
         ];
     }
