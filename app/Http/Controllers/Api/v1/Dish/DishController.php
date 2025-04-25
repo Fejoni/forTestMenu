@@ -3,13 +3,12 @@
 namespace App\Http\Controllers\Api\v1\Dish;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\v1\Dish\DishDestroyRequest;
+use App\Http\Requests\v1\Dish\DishRequest;
 use App\Http\Requests\v1\Dish\Time\DishTimeRequest;
-use App\Http\Requests\v1\Dish\Type\DishTypeDestroyRequest;
 use App\Http\Requests\v1\Dish\Type\DishTypeRequest;
 use App\Http\Resources\Dish\DishResource;
-use App\Http\Resources\Dish\DishTypeResource;
 use App\Models\Dish\Dish;
-use App\Models\Dish\DishType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -20,7 +19,7 @@ class DishController extends Controller
         return DishResource::collection(Dish::query()->get());
     }
 
-    public function store(DishTimeRequest $request): JsonResponse
+    public function store(DishRequest $request): JsonResponse
     {
         Dish::query()->create([
             'name' => $request->get('name'),
@@ -42,9 +41,9 @@ class DishController extends Controller
         ]);
     }
 
-    public function update(DishTypeRequest $request): JsonResponse
+    public function update(DishRequest $request): JsonResponse
     {
-        DishType::query()
+        Dish::query()
             ->where('uuid', $request->get('id'))
             ->update([
                 'name' => $request->get('name'),
@@ -65,9 +64,9 @@ class DishController extends Controller
             'status' => true,
         ]);
     }
-    public function destroy(DishTypeDestroyRequest $request): JsonResponse
+    public function destroy(DishDestroyRequest $request): JsonResponse
     {
-        DishType::query()
+        Dish::query()
             ->where('uuid', $request->get('id'))
             ->delete();
 

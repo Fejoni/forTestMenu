@@ -2,11 +2,15 @@
 
 namespace App\Http\Resources\Dish;
 
+use App\Models\Dish\DishCategory;
+use App\Models\Dish\DishSuitable;
+use App\Models\Dish\DishTime;
+use App\Models\Dish\DishType;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 /**
- * @property string $uuid
+ * @property mixed $uuid
  * @property string $name
  * @property float|int $calories
  * @property string $photo
@@ -40,10 +44,10 @@ class DishResource extends JsonResource
             'protein' => $this->protein,
             'carbohydrates' => $this->carbohydrates,
             'fats' => $this->fats,
-            'category_id' => new DishCategoryResource($this->category_id),
-            'time_id' => new DishTimeResource($this->time_id),
-            'suitable_id' => new DishSuitableResource($this->suitable_id),
-            'type_id' => new DishTypeResource($this->type_id),
+            'category' => new DishCategoryResource(DishCategory::query()->where('uuid', $this->category_id)->first()),
+            'time' => new DishTimeResource(DishTime::query()->where('uuid', $this->time_id)->first()),
+            'suitable' => new DishSuitableResource(DishSuitable::query()->where('uuid', $this->suitable_id)->first()),
+            'type' => new DishTypeResource(DishType::query()->where('uuid', $this->type_id)->first()),
         ];
     }
 }
