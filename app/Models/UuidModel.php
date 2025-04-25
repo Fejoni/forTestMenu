@@ -10,6 +10,8 @@ abstract class UuidModel extends Model
     protected $keyType = 'string';
     public $incrementing = false;
 
+    protected $primaryKey = 'uuid';
+
     protected static function boot(): void
     {
         parent::boot();

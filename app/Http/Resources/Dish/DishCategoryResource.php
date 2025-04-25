@@ -1,15 +1,11 @@
 <?php
 
-namespace App\Http\Resources\Product\Shop;
+namespace App\Http\Resources\Dish;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-/**
- * @property integer $id
- * @property string $name
- */
-class ShopResource extends JsonResource
+class DishCategoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,8 +15,8 @@ class ShopResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->uuid,
-            'name' => $this->name
+            'id' => $this->id,
+            'name' => $this->name,
         ];
     }
 }

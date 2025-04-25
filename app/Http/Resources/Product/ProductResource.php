@@ -2,10 +2,6 @@
 
 namespace App\Http\Resources\Product;
 
-use App\Http\Resources\Product\Category\CategoryResource;
-use App\Http\Resources\Product\Division\DivisionResource;
-use App\Http\Resources\Product\Shop\ShopResource;
-use App\Http\Resources\Product\Unit\UnitResource;
 use App\Models\Product\ProductCategory;
 use App\Models\Product\ProductDivision;
 use App\Models\Product\ProductUnit;
