@@ -22,9 +22,9 @@ class DishRequest extends FormRequest
             'suitable_id' => ['required', 'uuid'],
             'type_id' => ['required', 'uuid'],
             'id' => ['nullable', 'uuid'],
-            'products' => ['required', 'array'],
-            'products.*.product_id' => ['required', 'uuid'],
-            'products.*.quantity' => ['required', 'numeric'],
+            'products' => ['array'],
+            'products.*.product_id' => ['uuid'],
+            'products.*.quantity' => ['numeric'],
         ];
     }
 }

@@ -78,8 +78,11 @@ class DishController extends Controller
             ]);
 
             $dish->products()->detach();
-            foreach ($request->get('products') as $product) {
-                $dish->products()->attach($product['product_id'], ['quantity' => $product['quantity']]);
+
+            if (count($request->get('products')) > 0) {
+                foreach ($request->get('products') as $product) {
+                    $dish->products()->attach($product['product_id'], ['quantity' => $product['quantity']]);
+                }
             }
 
             return response()->json([
