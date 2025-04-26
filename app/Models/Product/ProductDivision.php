@@ -11,6 +11,5 @@ class ProductDivision extends UuidModel
 
     protected $fillable = [
         'name',
-        'image'
     ];
 }

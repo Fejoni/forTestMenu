@@ -10,18 +10,21 @@ class DishRequest extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
-            'calories' => ['required'],
+            'calories' => ['required', 'numeric'],
             'photo' => ['required', 'string'],
             'recipe' => ['required', 'string'],
             'is_premium' => ['required', 'boolean'],
-            'protein' => ['required'],
-            'carbohydrates' => ['required'],
-            'fats' => ['required'],
-            'category_id' => ['required'],
-            'time_id' => ['required'],
-            'suitable_id' => ['required'],
-            'type_id' => ['required'],
-            'id' => ['string'],
+            'protein' => ['required', 'numeric'],
+            'carbohydrates' => ['required', 'numeric'],
+            'fats' => ['required', 'numeric'],
+            'category_id' => ['required', 'uuid'],
+            'time_id' => ['required', 'uuid'],
+            'suitable_id' => ['required', 'uuid'],
+            'type_id' => ['required', 'uuid'],
+            'id' => ['nullable', 'uuid'],
+            'products' => ['required', 'array'],
+            'products.*.product_id' => ['required', 'uuid'],
+            'products.*.quantity' => ['required', 'numeric'],
         ];
     }
 }

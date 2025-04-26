@@ -2,11 +2,16 @@
 
 namespace App\Models\Dish;
 
+use App\Models\Product\Product;
 use App\Models\UuidModel;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Dish extends UuidModel
 {
+    use HasFactory;
+
     protected $fillable = [
         'name',
         'calories',
@@ -20,6 +25,9 @@ class Dish extends UuidModel
         'time_id',
         'suitable_id',
         'type_id',
+        'portions',
+        'cookingTime',
+        'weight'
     ];
 
     public function category(): BelongsTo
@@ -39,4 +47,9 @@ class Dish extends UuidModel
         return $this->belongsTo(DishType::class);
     }
 
+    public function products(): BelongsToMany
+    {
+        return $this->belongsToMany(Product::class, 'dish_product', 'dish_id', 'product_id')
+            ->withPivot('quantity');
+    }
 }

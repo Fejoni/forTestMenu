@@ -30,7 +30,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'image' => ['required', 'string'],
+            'image' => [],
             'unit' => ['required'],
             'shops' => ['required', 'array'],
             'category' => ['required'],
@@ -44,7 +44,7 @@ class ProductController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'image' => ['required', 'string'],
+            'image' => [],
             'unit' => ['required'],
             'shops' => ['required', 'array'],
             'category' => ['required'],

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('product_divisions', function (Blueprint $table) {
             $table->uuid()->primary();
             $table->string('name');
-            $table->string('image');
+//            $table->string('image');
             $table->timestamps();
         });
 

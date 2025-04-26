@@ -6,8 +6,11 @@ use App\Models\Dish\DishCategory;
 use App\Models\Dish\DishSuitable;
 use App\Models\Dish\DishTime;
 use App\Models\Dish\DishType;
+use App\Models\Product\Product;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use App\Http\Resources\Product\ProductResource;
 
 /**
  * @property mixed $uuid
@@ -23,6 +26,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property int $time_id
  * @property int $suitable_id
  * @property int $type_id
+ * @property Collection $products
  */
 
 class DishResource extends JsonResource
@@ -48,6 +52,16 @@ class DishResource extends JsonResource
             'time' => new DishTimeResource(DishTime::query()->where('uuid', $this->time_id)->first()),
             'suitable' => new DishSuitableResource(DishSuitable::query()->where('uuid', $this->suitable_id)->first()),
             'type' => new DishTypeResource(DishType::query()->where('uuid', $this->type_id)->first()),
+            'products' => $this->products->map(function (Product $product) {
+                return [
+                    'product' => new ProductResource($product),
+                    'quantity' => $product->pivot->quantity,
+                ];
+            }),
+            'portions' => $this->portions,
+            'cookingTime' => $this->cookingTime,
+            'weight' => $this->weight,
         ];
     }
 }
+

@@ -29,7 +29,7 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->uuid,
             'name' => $this->name,
-            'image' => $this->image,
+            'image' => $this->image ?? 'https://i.pinimg.com/736x/85/72/04/8572049c242cfd4eb7fcae2fb7f220f6.jpg',
             'unit' => new UnitResource(ProductUnit::query()->where('uuid', $this->unit_id)->first()),
             'category' => new CategoryResource(ProductCategory::query()->where('uuid', $this->categories_id)->first()),
             'division' => new DivisionResource(ProductDivision::query()->where('uuid', $this->divisions_id)->first()),

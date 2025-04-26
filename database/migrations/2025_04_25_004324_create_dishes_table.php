@@ -21,6 +21,9 @@ return new class extends Migration
             $table->float('protein');
             $table->float('carbohydrates');
             $table->float('fats');
+            $table->float('portions');
+            $table->float('cookingTime');
+            $table->float('weight');
 
             $table->uuid('category_id');
             $table->foreign('category_id')->references('uuid')->on('dish_categories')->onDelete('cascade');
