@@ -19,7 +19,7 @@ class MenuController extends Controller
 
         if (!FoodMenu::query()
             ->where([
-//                ['users_id', auth()->user()->getAuthIdentifier()],
+                ['users_id', auth()->user()->getAuthIdentifier()],
                 ['day', $getDates[6]]])
             ->exists()) {
 
