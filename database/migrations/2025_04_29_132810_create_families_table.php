@@ -11,15 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('product_divisions', function (Blueprint $table) {
-            $table->uuid()->primary();
-            $table->string('name');
-//            $table->string('image');
+        Schema::create('families', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('users_id')->constrained()->cascadeOnDelete();
+            $table->integer('adults');
+            $table->integer('children');
             $table->timestamps();
         });
-
-        \App\Models\Product\ProductDivision::query()->create(['name' => 'test']);
-        \App\Models\Product\ProductDivision::query()->create(['name' => 'test2']);
     }
 
     /**
@@ -27,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('divisions');
+        Schema::dropIfExists('families');
     }
 };

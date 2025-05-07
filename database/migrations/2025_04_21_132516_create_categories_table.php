@@ -23,6 +23,12 @@ return new class extends Migration
                 'name' => 'test',
                 'image' => 'https://images.chesscomfiles.com/uploads/v1/user/434189707.298bc8ef.160x160o.4011d522d108.jpg'
             ]);
+
+        \App\Models\Product\ProductCategory::query()
+            ->create([
+                'name' => 'test2',
+                'image' => 'https://images.chesscomfiles.com/uploads/v1/user/434189707.298bc8ef.160x160o.4011d522d108.jpg'
+            ]);
     }
 
     /**
