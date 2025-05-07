@@ -21,7 +21,7 @@ class UserController extends Controller
 
         $data = InitData::isValid($request->get('init_data'), env('TELEGRAM_BOT_TOKEN'), true);
 
-        if ($data['isValid']) {
+        if ($data['isValid'] and auth()->user()->telegram_id == $data['data']['parsed']['user']['id']) {
             return response()->json($userServices->userResponse($data, auth()->user()));
         }
 
