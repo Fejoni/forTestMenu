@@ -22,8 +22,6 @@ class Dish extends UuidModel
         'carbohydrates',
         'fats',
         'category_id',
-        'time_id',
-        'suitable_id',
         'type_id',
         'portions',
         'cookingTime',
@@ -53,4 +51,15 @@ class Dish extends UuidModel
             ->belongsToMany(Product::class, 'dish_product', 'dish_id', 'product_id')
             ->withPivot('quantity');
     }
+
+    public function times(): BelongsToMany
+    {
+        return $this->belongsToMany(DishTime::class, 'dish_dish_time', 'dish_id', 'time_id');
+    }
+
+    public function suitables(): BelongsToMany
+    {
+        return $this->belongsToMany(DishSuitable::class, 'dish_dish_suitable', 'dish_id', 'suitable_id');
+    }
+
 }

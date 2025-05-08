@@ -42,15 +42,21 @@ class DishResource extends JsonResource
             'id' => $this->uuid,
             'name' => $this->name,
             'calories' => $this->calories,
-            'photo' => $this->photo,
+            'photo' => $this->photo ?? 'https://i.pinimg.com/736x/85/72/04/8572049c242cfd4eb7fcae2fb7f220f6.jpg',
             'recipe' => $this->recipe,
             'is_premium' => $this->is_premium,
             'protein' => $this->protein,
             'carbohydrates' => $this->carbohydrates,
             'fats' => $this->fats,
             'category' => new DishCategoryResource(DishCategory::query()->where('uuid', $this->category_id)->first()),
-            'time' => new DishTimeResource(DishTime::query()->where('uuid', $this->time_id)->first()),
-            'suitable' => new DishSuitableResource(DishSuitable::query()->where('uuid', $this->suitable_id)->first()),
+
+            'time' => $this->times->map(function (DishTime $dishTime) {
+                return new DishTimeResource($dishTime);
+            }),
+            'suitable' => $this->suitables->map(function (DishSuitable $dishSuitable) {
+                return new DishSuitableResource($dishSuitable);
+            }),
+
             'type' => new DishTypeResource(DishType::query()->where('uuid', $this->type_id)->first()),
             'products' => $this->products->map(function (Product $product) {
                 return [

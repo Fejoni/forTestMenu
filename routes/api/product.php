@@ -41,11 +41,4 @@ Route::prefix('products')->group(function () {
         Route::patch('/', [DivisionController::class, 'update']);
         Route::post('/', [DivisionController::class, 'store']);
     });
-
-    Route::prefix('division')->group(function () {
-        Route::get('/', [DivisionController::class, 'index']);
-        Route::delete('/', [DivisionController::class, 'delete']);
-        Route::patch('/', [DivisionController::class, 'update']);
-        Route::post('/', [DivisionController::class, 'store']);
-    });
 });

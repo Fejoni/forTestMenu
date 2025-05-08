@@ -27,7 +27,6 @@ class DivisionController extends Controller
     {
         ProductDivision::query()->where('uuid', $request->get('id'))->update([
             'name' => $request->get('name'),
-            'image' => $request->get('image'),
         ]);
 
         return response()->json();
@@ -37,7 +36,6 @@ class DivisionController extends Controller
     {
         ProductDivision::query()->create([
             'name' => $request->get('name'),
-            'image' => $request->get('image'),
         ]);
 
         return response()->json();

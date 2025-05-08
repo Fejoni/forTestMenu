@@ -12,13 +12,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-            $table->uuid()->primary();
+            $table->uuid('uuid')->primary();
             $table->string('name');
             $table->string('image')->nullable();
+            $table->float('count')->nullable();
 
-            $table->uuid('unit_id');
-            $table->uuid('categories_id');
-            $table->uuid('divisions_id');
+            $table->uuid('unit_id')->nullable()->index();
+            $table->uuid('categories_id')->nullable()->index();
+            $table->uuid('divisions_id')->nullable()->index();
 
             $table->foreign('unit_id')->references('uuid')->on('product_units')->onDelete('cascade');
             $table->foreign('categories_id')->references('uuid')->on('product_categories')->onDelete('cascade');
@@ -26,7 +27,6 @@ return new class extends Migration
 
             $table->timestamps();
         });
-
     }
 
     /**

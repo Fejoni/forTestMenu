@@ -9,6 +9,7 @@ use App\Http\Resources\Dish\DishTimeResource;
 use App\Models\Dish\DishTime;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Support\Facades\DB;
 
 class DishTimeController extends Controller
 {

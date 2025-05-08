@@ -18,8 +18,8 @@ return new class extends Migration
         Schema::create('product_product_shop', function (Blueprint $table) {
             $table->id();
 
-            $table->uuid('product_uuid');
-            $table->uuid('product_shop_uuid');
+            $table->uuid('product_uuid')->nullable()->index();
+            $table->uuid('product_shop_uuid')->nullable()->index();
 
             $table->foreign('product_uuid')->references('uuid')->on('products')->onDelete('cascade');
             $table->foreign('product_shop_uuid')->references('uuid')->on('product_shops')->onDelete('cascade');

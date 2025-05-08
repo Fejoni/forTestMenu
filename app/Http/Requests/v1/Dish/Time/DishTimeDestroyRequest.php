@@ -9,7 +9,7 @@ class DishTimeDestroyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['required', 'string', 'exists:dish_times1,uuid'],
+            'id' => ['required', 'string'],
         ];
     }
 }

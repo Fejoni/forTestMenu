@@ -15,7 +15,7 @@ class DishController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        return DishResource::collection(Dish::query()->with('products')->get());
+        return DishResource::collection(Dish::query()->with(['products', 'times', 'suitables'])->get());
     }
 
     public function store(DishRequest $request): JsonResponse
@@ -31,8 +31,6 @@ class DishController extends Controller
                 'carbohydrates' => $request->get('carbohydrates'),
                 'fats' => $request->get('fats'),
                 'category_id' => $request->get('category_id'),
-                'time_id' => $request->get('time_id'),
-                'suitable_id' => $request->get('suitable_id'),
                 'type_id' => $request->get('type_id'),
                 'portions' => $request->get('portions'),
                 'cookingTime' => $request->get('cookingTime'),
@@ -41,6 +39,18 @@ class DishController extends Controller
 
             foreach ($request->get('products') as $product) {
                 $dish->products()->attach($product['product_id'], ['quantity' => $product['quantity']]);
+            }
+
+            if (count($request->get('time_ids'))) {
+                foreach ($request->get('time_ids') as $time) {
+                    $dish->times()->attach($time);
+                }
+            }
+
+            if (count($request->get('suitable_ids'))) {
+                foreach ($request->get('suitable_ids') as $suitable) {
+                    $dish->suitables()->attach($suitable);
+                }
             }
 
             return response()->json([
@@ -69,8 +79,6 @@ class DishController extends Controller
                 'carbohydrates' => $request->get('carbohydrates'),
                 'fats' => $request->get('fats'),
                 'category_id' => $request->get('category_id'),
-                'time_id' => $request->get('time_id'),
-                'suitable_id' => $request->get('suitable_id'),
                 'type_id' => $request->get('type_id'),
                 'portions' => $request->get('portions'),
                 'cookingTime' => $request->get('cookingTime'),
@@ -78,10 +86,22 @@ class DishController extends Controller
             ]);
 
             $dish->products()->detach();
+            $dish->times()->detach();
+            $dish->suitables()->detach();
 
-            if (count($request->get('products')) > 0) {
-                foreach ($request->get('products') as $product) {
-                    $dish->products()->attach($product['product_id'], ['quantity' => $product['quantity']]);
+            foreach ($request->get('products') as $product) {
+                $dish->products()->attach($product['product_id'], ['quantity' => $product['quantity']]);
+            }
+
+            if (count($request->get('time_ids'))) {
+                foreach ($request->get('time_ids') as $time) {
+                    $dish->times()->attach($time);
+                }
+            }
+
+            if (count($request->get('suitable_ids'))) {
+                foreach ($request->get('suitable_ids') as $suitable) {
+                    $dish->suitables()->attach($suitable);
                 }
             }
 

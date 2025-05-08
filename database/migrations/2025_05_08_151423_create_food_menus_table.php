@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('food_menus', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('users_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('users_id')->nullable()->index()->constrained('users')->onDelete('cascade');
 
-            $table->uuid('dish_time_id'); // правильное имя и тип
+            $table->uuid('dish_time_id')->nullable()->index();
             $table->foreign('dish_time_id')->references('uuid')->on('dish_times')->onDelete('cascade');
 
             $table->string('day');
@@ -24,11 +24,14 @@ return new class extends Migration
 
         Schema::create('food_menu_dish_product', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('food_menu_id')->constrained('food_menus')->onDelete('cascade');
-            $table->uuid('dish_id');
+            $table->foreignId('food_menu_id')->nullable()->index()->constrained('food_menus')->onDelete('cascade');
+
+            $table->uuid('dish_id')->nullable()->index();
             $table->foreign('dish_id')->references('uuid')->on('dishes')->onDelete('cascade');
+
             $table->timestamps();
         });
+
     }
 
     /**

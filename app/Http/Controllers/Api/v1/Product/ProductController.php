@@ -11,6 +11,7 @@ use App\Services\Product\ProductUpdateServices;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Validation\ValidationException;
 
 class ProductController extends Controller
 {
@@ -26,29 +27,25 @@ class ProductController extends Controller
         return response()->json();
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function update(Request $request, ProductUpdateServices $productUpdateServices)
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'image' => [],
-            'unit' => ['required'],
-            'shops' => ['required', 'array'],
-            'category' => ['required'],
-            'division' => ['required'],
         ]);
 
         return $productUpdateServices->edit($request->all());
     }
 
+    /**
+     * @throws ValidationException
+     */
     public function store(Request $request, ProductStoreServices $services)
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
-            'image' => [],
-            'unit' => ['required'],
-            'shops' => ['required', 'array'],
-            'category' => ['required'],
-            'division' => ['required'],
         ]);
 
         return $services->create($request->all());

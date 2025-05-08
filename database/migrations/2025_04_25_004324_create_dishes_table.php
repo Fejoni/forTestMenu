@@ -19,44 +19,66 @@ return new class extends Migration
         Schema::create('dishes', function (Blueprint $table) {
             $table->uuid()->primary();
             $table->string('name');
-            $table->float('calories');
-            $table->string('photo');
-            $table->string('recipe');
+            $table->float('calories')->nullable();
+            $table->string('photo')->nullable();
+            $table->string('recipe')->nullable();
             $table->boolean('is_premium');
-            $table->float('protein');
-            $table->float('carbohydrates');
-            $table->float('fats');
-            $table->float('portions');
-            $table->float('cookingTime');
-            $table->float('weight');
+            $table->float('protein')->nullable();
+            $table->float('carbohydrates')->nullable();
+            $table->float('fats')->nullable();
+            $table->float('portions')->nullable();
+            $table->float('cookingTime')->nullable();
+            $table->float('weight')->nullable();
 
-            $table->uuid('category_id');
+            $table->uuid('category_id')->nullable()->index();
             $table->foreign('category_id')->references('uuid')->on('dish_categories')->onDelete('cascade');
 
-            $table->uuid('time_id');
+            $table->uuid('time_id')->nullable()->index();
             $table->foreign('time_id')->references('uuid')->on('dish_times')->onDelete('cascade');
 
-            $table->uuid('suitable_id');
+            $table->uuid('suitable_id')->nullable()->index();
             $table->foreign('suitable_id')->references('uuid')->on('dish_suitables')->onDelete('cascade');
 
-            $table->uuid('type_id');
+            $table->uuid('type_id')->nullable()->index();
             $table->foreign('type_id')->references('uuid')->on('dish_types')->onDelete('cascade');
 
             $table->timestamps();
         });
 
+        Schema::create('dish_dish_time', function (Blueprint $table) {
+            $table->uuid('dish_id')->index();
+            $table->uuid('time_id')->index();
+
+            $table->foreign('dish_id')->references('uuid')->on('dishes')->onDelete('cascade');
+            $table->foreign('time_id')->references('uuid')->on('dish_times')->onDelete('cascade');
+
+            $table->primary(['dish_id', 'time_id']);
+        });
+
+
+        Schema::create('dish_dish_suitable', function (Blueprint $table) {
+            $table->uuid('dish_id')->index();
+            $table->uuid('suitable_id')->index();
+
+            $table->foreign('dish_id')->references('uuid')->on('dishes')->onDelete('cascade');
+            $table->foreign('suitable_id')->references('uuid')->on('dish_suitables')->onDelete('cascade');
+
+            $table->primary(['dish_id', 'suitable_id']);
+        });
+
+
         // Получаем случайные UUID'ы из связанных таблиц
-        $category1 = DishCategory::inRandomOrder()->first()?->uuid;
-        $category2 = DishCategory::inRandomOrder()->first()?->uuid;
+        $category1 = DishCategory::query()->inRandomOrder()->first()?->uuid;
+        $category2 = DishCategory::query()->inRandomOrder()->first()?->uuid;
 
-        $time1 = DishTime::inRandomOrder()->first()?->uuid;
-        $time2 = DishTime::inRandomOrder()->first()?->uuid;
+        $time1 = DishTime::query()->inRandomOrder()->first()?->uuid;
+        $time2 = DishTime::query()->inRandomOrder()->first()?->uuid;
 
-        $suitable1 = DishSuitable::inRandomOrder()->first()?->uuid;
-        $suitable2 = DishSuitable::inRandomOrder()->first()?->uuid;
+        $suitable1 = DishSuitable::query()->inRandomOrder()->first()?->uuid;
+        $suitable2 = DishSuitable::query()->inRandomOrder()->first()?->uuid;
 
-        $type1 = DishType::inRandomOrder()->first()?->uuid;
-        $type2 = DishType::inRandomOrder()->first()?->uuid;
+        $type1 = DishType::query()->inRandomOrder()->first()?->uuid;
+        $type2 = DishType::query()->inRandomOrder()->first()?->uuid;
 
         $dishes = [
             [
@@ -122,6 +144,18 @@ return new class extends Migration
         ];
 
         \Illuminate\Support\Facades\DB::table('dishes')->insert($dishes);
+
+        DB::table('dish_dish_time')->insert([
+            ['dish_id' => $dishes[0]['uuid'], 'time_id' => $time1],
+            ['dish_id' => $dishes[1]['uuid'], 'time_id' => $time1],
+            ['dish_id' => $dishes[2]['uuid'], 'time_id' => $time2],
+        ]);
+
+        DB::table('dish_dish_suitable')->insert([
+            ['dish_id' => $dishes[0]['uuid'], 'suitable_id' => $suitable1],
+            ['dish_id' => $dishes[1]['uuid'], 'suitable_id' => $suitable2],
+            ['dish_id' => $dishes[2]['uuid'], 'suitable_id' => $suitable1],
+        ]);
     }
 
     /**
