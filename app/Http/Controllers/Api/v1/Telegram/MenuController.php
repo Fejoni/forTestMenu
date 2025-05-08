@@ -73,7 +73,7 @@ class MenuController extends Controller
                 $noDishs = [];
                 foreach ($dishTimes as $dishTime) {
                     for ($i = 0; $i < rand(1, 2); $i++) {
-                        $dish = Dish::query()->whereNotIn('uuid', $noDishs)->where('time_id', $dishTime->uuid)
+                        $dish = Dish::query()->where('time_id', $dishTime->uuid)
                             ->orderByRaw('RANDOM()')->first();
 
                         if ($dish) {
