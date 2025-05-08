@@ -70,14 +70,12 @@ class MenuController extends Controller
                 ->delete();
             $dishTimes = DishTime::all();
             foreach ((new MenuServices())->getDates() as $date) {
-                $noDishs = [];
+
                 foreach ($dishTimes as $dishTime) {
                     for ($i = 0; $i < rand(1, 2); $i++) {
-                        $dish = Dish::query()->where('time_id', $dishTime->uuid)
-                            ->orderByRaw('RANDOM()')->first();
+                        $dish = Dish::query()->where('time_id', $dishTime->uuid)->orderByRaw('RANDOM()')->first();
 
                         if ($dish) {
-                            $noDishs[] = $dish->uuid;
                             $foods[$date][$dishTime->name][] = $dish;
 
                             $foodMenu = FoodMenu::query()->create([
