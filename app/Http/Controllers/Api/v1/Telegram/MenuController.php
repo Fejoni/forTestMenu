@@ -10,6 +10,7 @@ use App\Models\Telegram\FoodMenu;
 use App\Services\Menu\MenuServices;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Builder;
 
 class MenuController extends Controller
 {
@@ -69,10 +70,18 @@ class MenuController extends Controller
             FoodMenu::where([['users_id', auth()->user()->getAuthIdentifier()]])
                 ->delete();
             $dishTimes = DishTime::all();
+            $dishs = Dish::with(['times']);
             foreach ((new MenuServices())->getDates() as $date) {
 
                 foreach ($dishTimes as $dishTime) {
                     for ($i = 0; $i < rand(1, 2); $i++) {
+                        $dishCheck = $dishs->whereHas('times', function (Builder $query) use ($dishTime) {
+                            $query->where('time_id', $dishTime->uuid);
+                        })
+                            ->first();
+                        return response()->json([
+                            'message' => $dishCheck?->name
+                        ]);
                         $dish = Dish::with(['times' =>  function ($query) use ($dishTime) {
                             $query->where('time_id', $dishTime->uuid);
                         }])->whereHas('times')->inRandomOrder()->limit(1)->get();
