@@ -75,10 +75,10 @@ class MenuController extends Controller
                     for ($i = 0; $i < rand(1, 2); $i++) {
                         $dish = Dish::with(['times' =>  function ($query) use ($dishTime) {
                             $query->where('time_id', $dishTime->uuid);
-                        }])->whereHas('times')->orderByRaw('RANDOM()')->first();
+                        }])->whereHas('times')->inRandomOrder()->limit(1)->get();
                       //  $dish = Dish::query()->where('time_id', $dishTime->uuid)->orderByRaw('RANDOM()')->first();
 
-                        if ($dish) {
+                        if ($dish[0]) {
                             $foods[$date][$dishTime->name][] = $dish;
 
                             $foodMenu = FoodMenu::query()->create([
