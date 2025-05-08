@@ -68,14 +68,13 @@ class MenuController extends Controller
             $foods = [];
             FoodMenu::where([['users_id', auth()->user()->getAuthIdentifier()]])
                 ->delete();
-            $dishs = Dish::all();
             $dishTimes = DishTime::all();
             foreach ((new MenuServices())->getDates() as $date) {
 
 
                 foreach ($dishTimes as $dishTime) {
                     for ($i = 0; $i < rand(1, 2); $i++) {
-                        $dish = $dishs->where('time_id', $dishTime->uuid)->whereRaw('RAND() < 0.01')->first();
+                        $dish = Dish::where('time_id', $dishTime->uuid)->whereRaw('RAND() < 0.01')->first();
 
                         if ($dish) {
                             $foods[$date][$dishTime->name][] = $dish;
