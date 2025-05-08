@@ -78,7 +78,7 @@ class MenuController extends Controller
                         }])->whereHas('times')->first();
                       //  $dish = Dish::query()->where('time_id', $dishTime->uuid)->orderByRaw('RANDOM()')->first();
 
-                        if ($dish[0]) {
+                        if ($dish) {
                             $foods[$date][$dishTime->name][] = $dish;
 
                             $foodMenu = FoodMenu::query()->create([
