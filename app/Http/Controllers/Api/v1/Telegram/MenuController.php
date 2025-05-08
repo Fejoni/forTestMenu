@@ -62,21 +62,20 @@ class MenuController extends Controller
     {
         $getDates = (new MenuServices())->getDates();
 
-        if (!FoodMenu::query()
-            ->where([['users_id', auth()->user()->getAuthIdentifier()], ['day', $getDates[6]]])
+        if (!FoodMenu::where([['users_id', auth()->user()->getAuthIdentifier()], ['day', $getDates[6]]])
             ->exists()) {
 
             $foods = [];
-            FoodMenu::query()
-                ->where([['users_id', auth()->user()->getAuthIdentifier()]])
+            FoodMenu::where([['users_id', auth()->user()->getAuthIdentifier()]])
                 ->delete();
-
+            $dishs = Dish::all();
+            $dishTimes = DishTime::all();
             foreach ((new MenuServices())->getDates() as $date) {
-                $dishTimes = DishTime::query()->get();
+
 
                 foreach ($dishTimes as $dishTime) {
-                    for ($i = 0; $i < 2; $i++) {
-                        $dish = Dish::query()->where('time_id', $dishTime->uuid)->first();
+                    for ($i = 0; $i < rand(1, 2); $i++) {
+                        $dish = $dishs->where('time_id', $dishTime->uuid)->inRandomOrder()->first();
 
                         if ($dish) {
                             $foods[$date][$dishTime->name][] = $dish;
