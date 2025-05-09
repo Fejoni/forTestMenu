@@ -61,31 +61,49 @@ class MenuController extends Controller
     public function generate(): JsonResponse
     {
         $getDates = (new MenuServices())->getDates();
+        $userId = auth()->id();
 
-        if (!FoodMenu::where([['users_id', auth()->user()->getAuthIdentifier()], ['day', $getDates[6]]])
-            ->exists()) {
-
+        if (!FoodMenu::query()->where('users_id', $userId)->where('day', $getDates[6])->exists()) {
             $foods = [];
-            FoodMenu::where([['users_id', auth()->user()->getAuthIdentifier()]])
-                ->delete();
             $dishTimes = DishTime::all();
-            foreach ((new MenuServices())->getDates() as $date) {
+
+            foreach ($getDates as $date) {
+                $usedDishUuids = []; // UUID блюд, уже добавленных на эту дату
 
                 foreach ($dishTimes as $dishTime) {
-                    for ($i = 0; $i < rand(1, 2); $i++) {
-                        $dish = Dish::with(['times' =>  function ($query) use ($dishTime) {
-                            $query->where('time_id', $dishTime->uuid);
-                        }])->whereHas('times')->first();
-                      //  $dish = Dish::query()->where('time_id', $dishTime->uuid)->orderByRaw('RANDOM()')->first();
+                    $count = rand(1, 2);
+
+                    for ($i = 0; $i < $count; $i++) {
+                        // Пытаемся найти блюдо, исключая уже выбранные
+                        $dish = Dish::query()
+                            ->whereHas('times', function ($query) use ($dishTime) {
+                                $query->where('dish_dish_time.time_id', $dishTime->uuid);
+                            })
+                            ->whereNotIn('uuid', $usedDishUuids)
+                            ->inRandomOrder()
+                            ->first();
+
+                        // Если ничего не нашли, пробуем взять любое подходящее по времени
+                        if (!$dish) {
+                            $dish = Dish::query()
+                                ->whereHas('times', function ($query) use ($dishTime) {
+                                    $query->where('dish_dish_time.time_id', $dishTime->uuid);
+                                })
+                                ->inRandomOrder()
+                                ->first();
+                        }
 
                         if ($dish) {
+                            $usedDishUuids[] = $dish->uuid;
+
                             $foods[$date][$dishTime->name][] = $dish;
 
                             $foodMenu = FoodMenu::query()->create([
                                 'dish_time_id' => $dishTime->uuid,
-                                'users_id' => auth()->id(),
+                                'users_id' => $userId,
                                 'day' => $date,
                             ]);
+
                             $foodMenu->dishes()->attach($dish->uuid);
                         }
                     }
