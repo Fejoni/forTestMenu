@@ -39,11 +39,11 @@ class MenuFoodController extends Controller
                 ['uuid', $request->get('id')]
             ])->first();
 
-            $dish = Dish::query()->where('uuid', $food->dish_id)->with('time')->first();
+            $dish = Dish::query()->where('uuid', $food->dish_id)->with('times')->first();
 
             $dish = Dish::query()
                 ->whereHas('times', function ($query) use ($dish) {
-                    $query->where('dish_dish_time.time_id', $dish->time->uuid);
+                    $query->where('dish_dish_time.time_id', $dish->times[0]['uuid']);
                 })
                 ->where('uuid', '!=', $food->dish_id)
                 ->inRandomOrder()

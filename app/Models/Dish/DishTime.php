@@ -7,5 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 
 class DishTime extends UuidModel
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'uuid'];
 }

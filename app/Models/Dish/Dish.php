@@ -32,10 +32,6 @@ class Dish extends UuidModel
     {
         return $this->belongsTo(DishCategory::class, 'category_id', 'uuid');
     }
-    public function time(): BelongsTo
-    {
-        return $this->belongsTo(DishTime::class, 'time_id', 'uuid');
-    }
     public function suitable(): BelongsTo
     {
         return $this->belongsTo(DishSuitable::class, 'suitable_id', 'uuid');
