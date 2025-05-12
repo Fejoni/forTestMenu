@@ -16,14 +16,7 @@ class UserFamilyServices
     public function update(): bool
     {
         $this->updateUserFamily();
-
-        User::query()->where('id', auth()->user()->id)->first()->dishTimes()->sync(
-            collect($this->times)->mapWithKeys(function ($time) {
-                return [
-                    $time['id'] => ['calories' => $time['calories']]
-                ];
-            })->all()
-        );
+        (new UserTimeServices($this->times))->update();
 
         return true;
     }

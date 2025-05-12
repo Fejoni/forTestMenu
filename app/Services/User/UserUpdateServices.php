@@ -21,7 +21,11 @@ class UserUpdateServices
         }
 
         $this->updateUserQuery($data);
-        $this->updateFamilyQuery($data);
+
+        (new UserFamilyServices(
+            persons: $data['persons'],
+            times: $data['selectedTimes']
+        ))->update();
 
         return 200;
     }
@@ -33,19 +37,5 @@ class UserUpdateServices
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
         ]);
-    }
-
-    private function updateFamilyQuery(array $data): void
-    {
-        if (!Family::query()->where('users_id', auth()->user()->id)->exists()) {
-            Family::query()->create([
-                'users_id' => auth()->user()->id,
-                'counts' => $data['adults'],
-            ]);
-        } else {
-            Family::query()->where('users_id', auth()->user()->id)->update([
-                'counts' => $data['adults'],
-            ]);
-        }
     }
 }

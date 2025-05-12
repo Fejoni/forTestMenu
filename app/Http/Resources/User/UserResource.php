@@ -3,6 +3,7 @@
 namespace App\Http\Resources\User;
 
 use App\Models\Telegram\Family;
+use App\Models\User\UserDishTime;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -29,13 +30,25 @@ class UserResource extends JsonResource
             ->where('users_id', $this->id)
             ->first();
 
+        $selectedTimes = UserDishTime::query()
+            ->where('user_id', $this->id)
+            ->with('dishTime')
+            ->get();
+
         return [
             'id' => $this->id,
             'telegram_id' => $this->telegram_id,
             'name' => $this->name ?? null,
             'role' => $this->role ?? 0,
             'email' => $this->email ?? null,
-            'family' => $family->counts ?? 0
+            'family' => $family->counts ?? 0,
+            'selectedTimes' => $selectedTimes->map(function ($time) {
+                return [
+                    'id' => $time->dish_time_uuid,
+                    'calories' => $time->calories,
+                    'name' => $time->dishTime->name ?? '-',
+                ];
+            }) ?? 0
         ];
     }
 }

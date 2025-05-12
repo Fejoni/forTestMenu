@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 
 class UserProfileController extends Controller
 {
-    public function update(UserUpdateProfileRequest $request)
+    public function update(UserUpdateProfileRequest $request): bool
     {
         return (new UserFamilyServices(
             persons: $request->input('persons'),

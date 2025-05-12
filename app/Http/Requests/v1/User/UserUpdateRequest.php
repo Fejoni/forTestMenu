@@ -12,8 +12,15 @@ class UserUpdateRequest extends FormRequest
             'name' => ['required'],
             'password' => ['required', 'min:6'],
             'email' => ['required', 'email'],
-            'adults' => ['required'],
-            'children' => ['required'],
+            'persons' => ['required'],
+            'selectedTimes' => ['required'],
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'selectedTimes.required' => 'Поле приема пищи обязательно для заполнения',
         ];
     }
 }
