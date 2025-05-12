@@ -2,7 +2,9 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 
 return new class extends Migration
 {
@@ -12,30 +14,46 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dish_times', function (Blueprint $table) {
-            $table->uuid()->primary();
+            $table->uuid('uuid')->primary();  // Явно указываем имя столбца
             $table->string('name');
             $table->timestamps();
         });
 
-        $datas = [
+        DB::table('dish_times')->insert([
             [
-                'name' => 'Завтрак'
+                'uuid' => Str::uuid(),
+                'name' => 'Завтрак',
+                'created_at' => now(),
+                'updated_at' => now()
             ],
             [
-                'name' => 'Ужин'
+                'uuid' => Str::uuid(),
+                'name' => 'Ужин',
+                'created_at' => now(),
+                'updated_at' => now()
             ]
-        ];
+        ]);
 
-        foreach ($datas as $data) {
-            \App\Models\Dish\DishTime::query()->create($data);
-        }
+        Schema::create('user_dish_times', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+
+            $table->uuid('dish_time_uuid');
+            $table->foreign('dish_time_uuid')
+                ->references('uuid')
+                ->on('dish_times')
+                ->onDelete('cascade');
+
+            $table->integer('calories');
+            $table->timestamps();
+
+            $table->unique(['user_id', 'dish_time_uuid'], 'user_dish_time_unique');
+        });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
+        Schema::dropIfExists('user_dish_times');
         Schema::dropIfExists('dish_times');
     }
 };

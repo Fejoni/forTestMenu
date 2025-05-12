@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Family extends Model
 {
     protected $fillable = [
-        'users_id', 'adults', 'children',
+        'users_id', 'counts',
     ];
 }

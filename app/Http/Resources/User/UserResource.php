@@ -35,10 +35,7 @@ class UserResource extends JsonResource
             'name' => $this->name ?? null,
             'role' => $this->role ?? 0,
             'email' => $this->email ?? null,
-            'family' => [
-                'adults' => $family->adults ?? '',
-                'children' => $family->children ?? '',
-            ]
+            'family' => $family->counts ?? 0
         ];
     }
 }

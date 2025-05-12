@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('food_menus', function (Blueprint $table) {
-            $table->id();
+            $table->uuid()->unique();
             $table->foreignId('users_id')->nullable()->index()->constrained('users')->onDelete('cascade');
 
             $table->uuid('dish_time_id')->nullable()->index();
@@ -23,20 +23,18 @@ return new class extends Migration
         });
 
         Schema::create('food_menu_dish_product', function (Blueprint $table) {
-            $table->id();
-            $table->foreignId('food_menu_id')->nullable()->index()->constrained('food_menus')->onDelete('cascade');
+            $table->uuid()->unique();
+
+            $table->uuid('food_menus_id')->nullable()->index();
+            $table->foreign('food_menus_id')->references('uuid')->on('food_menus')->onDelete('cascade');
 
             $table->uuid('dish_id')->nullable()->index();
             $table->foreign('dish_id')->references('uuid')->on('dishes')->onDelete('cascade');
 
             $table->timestamps();
         });
-
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('food_menus');

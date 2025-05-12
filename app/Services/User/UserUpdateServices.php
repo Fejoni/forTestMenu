@@ -40,13 +40,11 @@ class UserUpdateServices
         if (!Family::query()->where('users_id', auth()->user()->id)->exists()) {
             Family::query()->create([
                 'users_id' => auth()->user()->id,
-                'adults' => $data['adults'],
-                'children' => $data['children'],
+                'counts' => $data['adults'],
             ]);
         } else {
             Family::query()->where('users_id', auth()->user()->id)->update([
-                'adults' => $data['adults'],
-                'children' => $data['children'],
+                'counts' => $data['adults'],
             ]);
         }
     }

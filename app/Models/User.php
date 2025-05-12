@@ -3,10 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Dish\DishTime;
 use App\Models\Dish\DishType;
 use App\Models\Telegram\Family;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -40,5 +42,17 @@ class User extends Authenticatable
     public function family(): BelongsTo
     {
         return $this->belongsTo(Family::class, 'users_id', 'id');
+    }
+
+    public function dishTimes(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            DishTime::class,
+            'user_dish_times',
+            'user_id',
+            'dish_time_uuid',
+            'id',
+            'uuid'
+        )->withPivot('calories');
     }
 }

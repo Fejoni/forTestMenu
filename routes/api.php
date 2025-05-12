@@ -11,14 +11,11 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::middleware('auth:sanctum')->group(function () {
-        Route::prefix('users')->group(function () {
-            Route::post('checkout', [UserCheckoutController::class, 'checkout']);
-        });
-
         Route::prefix('file')->group(function () {
             Route::post('upload', [ImageUploadController::class, 'upload']);
         });
 
+        require_once __DIR__ . '/api/user.php';
         require_once __DIR__ . '/api/product.php';
         require_once __DIR__ . '/api/dish.php';
     });
