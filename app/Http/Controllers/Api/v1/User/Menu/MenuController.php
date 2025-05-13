@@ -80,7 +80,7 @@ class MenuController extends Controller
         ], 401);
     }
 
-    public function repeatGenerate(): JsonResponse
+    public function replacementGenerate(): JsonResponse
     {
         if (FoodMenu::query()->where('users_id', auth()->user()->id)->exists()) {
             FoodMenu::query()->where('users_id', auth()->user()->id)->delete();
