@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Dish;
+namespace App\Http\Controllers\Api\v1\Admin\Dish;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\Dish\DishDestroyRequest;
@@ -9,7 +9,6 @@ use App\Http\Resources\Dish\DishResource;
 use App\Models\Dish\Dish;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\DB;
 
 class DishController extends Controller
 {

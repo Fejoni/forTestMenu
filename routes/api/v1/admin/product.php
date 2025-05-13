@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\v1\Product\Category\CategoryController;
-use App\Http\Controllers\Api\v1\Product\Division\DivisionController;
-use App\Http\Controllers\Api\v1\Product\ProductController;
-use App\Http\Controllers\Api\v1\Product\Shop\ShopController;
-use App\Http\Controllers\Api\v1\Product\Unit\UnitController;
+use App\Http\Controllers\Api\v1\Admin\Product\Category\CategoryController;
+use App\Http\Controllers\Api\v1\Admin\Product\Division\DivisionController;
+use App\Http\Controllers\Api\v1\Admin\Product\ProductController;
+use App\Http\Controllers\Api\v1\Admin\Product\Shop\ShopController;
+use App\Http\Controllers\Api\v1\Admin\Product\Unit\UnitController;
 use Illuminate\Support\Facades\Route;
 
 

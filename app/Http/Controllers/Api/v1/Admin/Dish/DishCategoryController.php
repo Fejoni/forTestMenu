@@ -1,26 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Dish;
+namespace App\Http\Controllers\Api\v1\Admin\Dish;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\v1\Dish\Time\DishTimeDestroyRequest;
-use App\Http\Requests\v1\Dish\Time\DishTimeRequest;
-use App\Http\Resources\Dish\DishTimeResource;
-use App\Models\Dish\DishTime;
+use App\Http\Requests\v1\Dish\Category\DishCategoryDestroyRequest;
+use App\Http\Requests\v1\Dish\Category\DishCategoryRequest;
+use App\Http\Resources\Dish\DishCategoryResource;
+use App\Models\Dish\DishCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
-use Illuminate\Support\Facades\DB;
 
-class DishTimeController extends Controller
+class DishCategoryController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        return DishTimeResource::collection(DishTime::query()->get());
+        return DishCategoryResource::collection(DishCategory::query()->get());
     }
 
-    public function store(DishTimeRequest $request): JsonResponse
+    public function store(DishCategoryRequest $request): JsonResponse
     {
-        DishTime::query()->create([
+        DishCategory::query()->create([
             'name' => $request->get('name'),
         ]);
 
@@ -29,9 +28,9 @@ class DishTimeController extends Controller
         ]);
     }
 
-    public function update(DishTimeRequest $request): JsonResponse
+    public function update(DishCategoryRequest $request): JsonResponse
     {
-        DishTime::query()
+        DishCategory::query()
             ->where('uuid', $request->get('id'))
             ->update([
                 'name' => $request->get('name'),
@@ -41,9 +40,9 @@ class DishTimeController extends Controller
             'status' => true,
         ]);
     }
-    public function destroy(DishTimeDestroyRequest $request): JsonResponse
+    public function destroy(DishCategoryDestroyRequest $request): JsonResponse
     {
-        DishTime::query()
+        DishCategory::query()
             ->where('uuid', $request->get('id'))
             ->delete();
 

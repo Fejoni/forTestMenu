@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\v1\Telegram\User\UserController;
+use App\Http\Controllers\Api\v1\User\Telegram\User\UserController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('telegram')->group(function () {

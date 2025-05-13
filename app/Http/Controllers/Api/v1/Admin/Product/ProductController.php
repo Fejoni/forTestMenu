@@ -1,11 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Product;
+namespace App\Http\Controllers\Api\v1\Admin\Product;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Product\Product;
-use App\Models\Product\ProductUnit;
 use App\Services\Product\ProductStoreServices;
 use App\Services\Product\ProductUpdateServices;
 use Illuminate\Http\JsonResponse;

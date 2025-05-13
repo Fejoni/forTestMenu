@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Product\Division;
+namespace App\Http\Controllers\Api\v1\Admin\Product\Division;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Product\DivisionResource;

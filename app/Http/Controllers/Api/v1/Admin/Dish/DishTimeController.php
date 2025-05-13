@@ -1,26 +1,25 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Dish;
+namespace App\Http\Controllers\Api\v1\Admin\Dish;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\v1\Dish\Category\DishCategoryDestroyRequest;
-use App\Http\Requests\v1\Dish\Category\DishCategoryRequest;
-use App\Http\Resources\Dish\DishCategoryResource;
-use App\Models\Dish\DishCategory;
+use App\Http\Requests\v1\Dish\Time\DishTimeDestroyRequest;
+use App\Http\Requests\v1\Dish\Time\DishTimeRequest;
+use App\Http\Resources\Dish\DishTimeResource;
+use App\Models\Dish\DishTime;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class DishCategoryController extends Controller
+class DishTimeController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        return DishCategoryResource::collection(DishCategory::query()->get());
+        return DishTimeResource::collection(DishTime::query()->get());
     }
 
-    public function store(DishCategoryRequest $request): JsonResponse
+    public function store(DishTimeRequest $request): JsonResponse
     {
-        DishCategory::query()->create([
+        DishTime::query()->create([
             'name' => $request->get('name'),
         ]);
 
@@ -29,9 +28,9 @@ class DishCategoryController extends Controller
         ]);
     }
 
-    public function update(DishCategoryRequest $request): JsonResponse
+    public function update(DishTimeRequest $request): JsonResponse
     {
-        DishCategory::query()
+        DishTime::query()
             ->where('uuid', $request->get('id'))
             ->update([
                 'name' => $request->get('name'),
@@ -41,9 +40,9 @@ class DishCategoryController extends Controller
             'status' => true,
         ]);
     }
-    public function destroy(DishCategoryDestroyRequest $request): JsonResponse
+    public function destroy(DishTimeDestroyRequest $request): JsonResponse
     {
-        DishCategory::query()
+        DishTime::query()
             ->where('uuid', $request->get('id'))
             ->delete();
 

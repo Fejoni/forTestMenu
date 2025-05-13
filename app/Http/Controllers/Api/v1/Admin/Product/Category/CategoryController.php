@@ -1,32 +1,33 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Product\Shop;
+namespace App\Http\Controllers\Api\v1\Admin\Product\Category;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Product\ShopResource;
-use App\Models\Product\ProductShop;
+use App\Http\Resources\Product\CategoryResource;
+use App\Models\Product\ProductCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class ShopController extends Controller
+class CategoryController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        return ShopResource::collection(ProductShop::query()->get());
+        return CategoryResource::collection(ProductCategory::query()->get());
     }
 
     public function delete(Request $request): JsonResponse
     {
-        ProductShop::query()->where('uuid', $request->get('id'))->delete();
+        ProductCategory::query()->where('uuid', $request->get('id'))->delete();
 
         return response()->json();
     }
 
     public function update(Request $request): JsonResponse
     {
-        ProductShop::query()->where('uuid', $request->get('id'))->update([
+        ProductCategory::query()->where('uuid', $request->get('id'))->update([
             'name' => $request->get('name'),
+            'image' => $request->get('image'),
         ]);
 
         return response()->json();
@@ -34,8 +35,9 @@ class ShopController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        ProductShop::query()->create([
+        ProductCategory::query()->create([
             'name' => $request->get('name'),
+            'image' => $request->get('image'),
         ]);
 
         return response()->json();

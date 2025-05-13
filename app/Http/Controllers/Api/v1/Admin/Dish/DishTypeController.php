@@ -1,25 +1,26 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Dish;
+namespace App\Http\Controllers\Api\v1\Admin\Dish;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\v1\Dish\Suitable\DishSuitableDestroyRequest;
-use App\Http\Requests\v1\Dish\Suitable\DishSuitableRequest;
-use App\Http\Resources\Dish\DishSuitableResource;
-use App\Models\Dish\DishSuitable;
+use App\Http\Requests\v1\Dish\Time\DishTimeRequest;
+use App\Http\Requests\v1\Dish\Type\DishTypeDestroyRequest;
+use App\Http\Requests\v1\Dish\Type\DishTypeRequest;
+use App\Http\Resources\Dish\DishTypeResource;
+use App\Models\Dish\DishType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class DishSuitableController extends Controller
+class DishTypeController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        return DishSuitableResource::collection(DishSuitable::query()->get());
+        return DishTypeResource::collection(DishType::query()->get());
     }
 
-    public function store(DishSuitableRequest $request): JsonResponse
+    public function store(DishTimeRequest $request): JsonResponse
     {
-        DishSuitable::query()->create([
+        DishType::query()->create([
             'name' => $request->get('name'),
         ]);
 
@@ -28,9 +29,9 @@ class DishSuitableController extends Controller
         ]);
     }
 
-    public function update(DishSuitableRequest $request): JsonResponse
+    public function update(DishTypeRequest $request): JsonResponse
     {
-        DishSuitable::query()
+        DishType::query()
             ->where('uuid', $request->get('id'))
             ->update([
                 'name' => $request->get('name'),
@@ -40,9 +41,9 @@ class DishSuitableController extends Controller
             'status' => true,
         ]);
     }
-    public function destroy(DishSuitableDestroyRequest $request): JsonResponse
+    public function destroy(DishTypeDestroyRequest $request): JsonResponse
     {
-        DishSuitable::query()
+        DishType::query()
             ->where('uuid', $request->get('id'))
             ->delete();
 

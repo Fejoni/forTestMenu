@@ -1,12 +1,9 @@
 <?php
 
-use App\Http\Controllers\Api\v1\User\UserCheckoutController;
-use App\Http\Controllers\Api\v1\User\UserLoginController;
+use App\Http\Controllers\Api\v1\User\User\UserCheckoutController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('user')->group(function () {
-    Route::post('login', [UserLoginController::class, 'login']);
-
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('checkout', [UserCheckoutController::class, 'checkout']);
 

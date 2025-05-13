@@ -1,10 +1,10 @@
 <?php
 
-use App\Http\Controllers\Api\v1\Dish\DishCategoryController;
-use App\Http\Controllers\Api\v1\Dish\DishController;
-use App\Http\Controllers\Api\v1\Dish\DishSuitableController;
-use App\Http\Controllers\Api\v1\Dish\DishTimeController;
-use App\Http\Controllers\Api\v1\Dish\DishTypeController;
+use App\Http\Controllers\Api\v1\Admin\Dish\DishCategoryController;
+use App\Http\Controllers\Api\v1\Admin\Dish\DishController;
+use App\Http\Controllers\Api\v1\Admin\Dish\DishSuitableController;
+use App\Http\Controllers\Api\v1\Admin\Dish\DishTimeController;
+use App\Http\Controllers\Api\v1\Admin\Dish\DishTypeController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('dish')->group(function () {

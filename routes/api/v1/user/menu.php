@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\Api\v1\Menu\MenuController;
-use App\Http\Controllers\Api\v1\Menu\MenuFoodController;
+use App\Http\Controllers\Api\v1\User\Menu\MenuController;
+use App\Http\Controllers\Api\v1\User\Menu\MenuFoodController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('menu')->group(function () {

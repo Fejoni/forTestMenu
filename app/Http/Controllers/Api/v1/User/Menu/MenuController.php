@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Menu;
+namespace App\Http\Controllers\Api\v1\User\Menu;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Dish\DishResource;

@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api\v1\Image;
+namespace App\Http\Controllers\Api\v1\Admin\Image;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\User\UserUploadFileRequest;
 use App\Services\User\UserUploadFileServices;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class ImageUploadController extends Controller
 {
