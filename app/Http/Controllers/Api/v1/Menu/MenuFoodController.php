@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\v1\Menu;
 
 use App\Http\Controllers\Controller;
 use App\Models\Dish\Dish;
-use App\Models\Dish\DishTime;
 use App\Models\FoodMenuDishProduct;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -13,9 +12,7 @@ class MenuFoodController extends Controller
 {
     public function delete(Request $request): JsonResponse
     {
-        if (FoodMenuDishProduct::query()->where([
-            ['uuid', $request->get('id')]
-        ])->exists()) {
+        if (FoodMenuDishProduct::query()->where([['uuid', $request->get('id')]])->exists()) {
             FoodMenuDishProduct::query()->where([
                 ['uuid', $request->get('id')]
             ])->delete();

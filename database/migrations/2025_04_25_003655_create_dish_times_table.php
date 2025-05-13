@@ -28,10 +28,28 @@ return new class extends Migration
             ],
             [
                 'uuid' => Str::uuid(),
+                'name' => 'Ланч',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'uuid' => Str::uuid(),
+                'name' => 'Обед',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'uuid' => Str::uuid(),
+                'name' => 'Полдник',
+                'created_at' => now(),
+                'updated_at' => now()
+            ],
+            [
+                'uuid' => Str::uuid(),
                 'name' => 'Ужин',
                 'created_at' => now(),
                 'updated_at' => now()
-            ]
+            ],
         ]);
 
         Schema::create('user_dish_times', function (Blueprint $table) {
