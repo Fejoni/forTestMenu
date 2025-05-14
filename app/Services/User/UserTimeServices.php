@@ -14,7 +14,11 @@ class UserTimeServices
 
     public function update(): void
     {
-        User::query()->where('id', auth()->user()->id)->first()->dishTimes()->sync(
+        $user = User::query()->where('id', auth()->user()->id)->first();
+
+        $user->dishTimes()->detach();
+
+        $user->dishTimes()->sync(
             collect($this->times)->mapWithKeys(function ($time) {
                 return [
                     $time['id'] => ['calories' => $time['calories']]

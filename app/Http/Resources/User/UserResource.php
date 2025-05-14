@@ -33,6 +33,7 @@ class UserResource extends JsonResource
         $selectedTimes = UserDishTime::query()
             ->where('user_id', $this->id)
             ->with('dishTime')
+            ->orderBy('id', 'asc')
             ->get();
 
         return [

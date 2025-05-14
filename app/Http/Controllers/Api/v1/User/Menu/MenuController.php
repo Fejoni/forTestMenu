@@ -67,7 +67,6 @@ class MenuController extends Controller
         $getDates = (new MenuServices())->getDates();
 
         if (!FoodMenu::query()->where('users_id', auth()->user()->id)->where('day', $getDates[0])->exists()) {
-
             (new MenuServices())->generate();
 
             return response()->json([
