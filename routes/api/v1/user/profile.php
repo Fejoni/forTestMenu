@@ -7,6 +7,6 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('profile')->group(function () {
     Route::prefix('update')->group(function () {
         Route::post('/', [UserProfileController::class, 'update']);
-        Route::post('first-view', [UserController::class, 'update']);
+        Route::post('/first-view', [UserProfileController::class, 'updateFirstView']);
     });
 });

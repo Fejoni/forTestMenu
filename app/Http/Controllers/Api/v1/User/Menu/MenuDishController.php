@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Dish\DishResource;
 use App\Models\Dish\Dish;
 use App\Models\Dish\DishCategory;
+use App\Models\Dish\DishTime;
 use App\Models\FoodMenuDishProduct;
+use App\Models\Telegram\FoodMenu;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -71,5 +73,45 @@ class MenuDishController extends Controller
         return response()->json([
             'message' => 'Не найдено',
         ], 403);
+    }
+
+    public function append(Request $request)
+    {
+        $request->validate([
+            'new' => ['required'],
+            'time' => ['required'],
+            'day' => ['required'],
+        ]);
+
+        $dishTime = DishTime::query()->where('name', $request->get('time'))->first();
+
+        if (!$dishTime) {
+            return response()->json([
+                'message' => 'Время не найдено'
+            ], 403);
+        }
+
+        $dish = Dish::query()->where('uuid', $request->get('new'))->first();
+
+        if (!$dish) {
+            return response()->json([
+                'message' => 'Блюдо не найдено'
+            ], 403);
+        }
+
+        $foodMenu = FoodMenu::query()->create([
+            'users_id' => auth()->user()->id,
+            'dish_time_id' => $dishTime->uuid,
+            'day' => $request->get('day'),
+        ]);
+
+        FoodMenuDishProduct::query()->create([
+            'food_menus_id' => $foodMenu->uuid,
+            'dish_id' => $dish->uuid,
+        ]);
+
+        return response()->json([
+            'message' => 'Вы успешно добавили дополнительное блюдо'
+        ]);
     }
 }

@@ -20,9 +20,9 @@ class MenuController extends Controller
         if (!FoodMenu::query()
             ->where([
                 ['users_id', auth()->user()->getAuthIdentifier()],
-                ['day', $getDates[6]]])
+                ['day', $getDates[0]] // проверяем первый элемент (сегодняшний день)
+            ])
             ->exists()) {
-
             return response()->json([
                 'message' => 'Меню не сгенерировано'
             ]);
@@ -31,6 +31,7 @@ class MenuController extends Controller
         return FoodMenu::query()
             ->where('users_id', auth()->id())
             ->orderByRaw("FIELD(SUBSTRING(day, 1, 2), 'пн', 'вт', 'ср', 'чт', 'пт', 'сб', 'вс')")
+            ->whereIn('day', $getDates)
             ->get()
             ->groupBy('day')
             ->map(function ($group) {
@@ -55,11 +56,10 @@ class MenuController extends Controller
                     }
                 }
 
-                return collect(['Завтрак', 'Обед', 'Ужин'])
+                return collect(['Завтрак', 'Ланч', 'Обед', 'Полдник', 'Ужин'])
                     ->filter(fn($time) => isset($dishesByDay[$time]))
                     ->mapWithKeys(fn($time) => [$time => $dishesByDay[$time]]);
             });
-
     }
 
     public function generate(): JsonResponse

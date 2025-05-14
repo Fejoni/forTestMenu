@@ -16,5 +16,6 @@ Route::prefix('menu')->group(function () {
         Route::get('/', [MenuDishController::class, 'index']);
         Route::delete('/delete', [MenuDishController::class, 'delete']);
         Route::post('/replacement', [MenuDishController::class, 'replacement']);
+        Route::post('/append', [MenuDishController::class, 'append']);
     });
 });

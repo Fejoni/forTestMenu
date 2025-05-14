@@ -64,16 +64,16 @@ return new class extends Migration
 
         // Получаем случайные UUID'ы из связанных таблиц
         $category1 = DishCategory::query()->inRandomOrder()->first()?->uuid;
-        $category2 = DishCategory::query()->inRandomOrder()->first()?->uuid;
+        $category2 = DishCategory::query()->skip(1)->inRandomOrder()->first()?->uuid;
 
         $time1 = DishTime::query()->inRandomOrder()->first()?->uuid;
-        $time2 = DishTime::query()->inRandomOrder()->first()?->uuid;
+        $time2 = DishTime::query()->skip(1)->inRandomOrder()->first()?->uuid;
 
         $suitable1 = DishSuitable::query()->inRandomOrder()->first()?->uuid;
-        $suitable2 = DishSuitable::query()->inRandomOrder()->first()?->uuid;
+        $suitable2 = DishSuitable::query()->skip(1)->inRandomOrder()->first()?->uuid;
 
         $type1 = DishType::query()->inRandomOrder()->first()?->uuid;
-        $type2 = DishType::query()->inRandomOrder()->first()?->uuid;
+        $type2 = DishType::query()->skip(1)->inRandomOrder()->first()?->uuid;
 
         $dishes = [
             [

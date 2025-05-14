@@ -41,14 +41,4 @@ class UserController extends Controller
 
         return response()->json(['status' => false], 403);
     }
-
-    /**
-     * @throws ValidationException
-     */
-    public function update(UserUpdateRequest $request, UserUpdateServices $updateServices): JsonResponse
-    {
-        return response()->json([
-            'status' => $updateServices->update($request->validated())
-        ]);
-    }
 }

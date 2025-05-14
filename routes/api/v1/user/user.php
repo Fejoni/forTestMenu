@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\v1\User\Dish\DishController;
 use App\Http\Controllers\Api\v1\User\User\UserCheckoutController;
 use Illuminate\Support\Facades\Route;
 
@@ -9,6 +10,13 @@ Route::prefix('user')->group(function () {
 
         require_once __DIR__ . '/profile.php';
         require_once __DIR__ . '/menu.php';
+
+        Route::prefix('dish')->group(function () {
+            Route::prefix('time')->group(function () {
+                Route::get('/', [DishController::class, 'time']);
+                Route::get('/default', [DishController::class, 'timeDefaultSelect']);
+            });
+        });
     });
 
     require_once __DIR__ . '/telegram.php';

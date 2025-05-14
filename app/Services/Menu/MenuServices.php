@@ -17,7 +17,8 @@ class MenuServices
         App::setLocale('ru');
         Carbon::setLocale('ru');
 
-        $period = CarbonPeriod::create(Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek());
+        $today = Carbon::now();
+        $period = CarbonPeriod::create($today, Carbon::now()->endOfWeek());
 
         $dates = [];
 
