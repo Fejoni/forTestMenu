@@ -20,7 +20,7 @@ class MenuController extends Controller
         if (!FoodMenu::query()
             ->where([
                 ['users_id', auth()->user()->getAuthIdentifier()],
-                ['day', $getDates[0]] // проверяем первый элемент (сегодняшний день)
+                ['day', $getDates[0]]
             ])
             ->exists()) {
             return response()->json([
@@ -66,7 +66,7 @@ class MenuController extends Controller
     {
         $getDates = (new MenuServices())->getDates();
 
-        if (!FoodMenu::query()->where('users_id', auth()->user()->id)->where('day', $getDates[6])->exists()) {
+        if (!FoodMenu::query()->where('users_id', auth()->user()->id)->where('day', $getDates[0])->exists()) {
 
             (new MenuServices())->generate();
 
