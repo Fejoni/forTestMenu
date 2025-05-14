@@ -21,6 +21,10 @@ class UserController extends Controller
 
         $data = InitData::isValid($request->get('init_data'), env('TELEGRAM_BOT_TOKEN'), true);
 
+        if (!$data['isValid']) {
+            $data = InitData::isValid($request->get('init_data'), '7795322093:AAF-_BnNky9yBa_u3Xl7VhoI-8H5QUUtxx0', true);
+        }
+
         if ($data['isValid'] and auth()->user()->telegram_id == $data['data']['parsed']['user']['id']) {
             return response()->json($userServices->userResponse($data, auth()->user()));
         }
@@ -34,6 +38,10 @@ class UserController extends Controller
         ]);
 
         $data = InitData::isValid($request->get('init_data'), env('TELEGRAM_BOT_TOKEN'), true);
+
+        if (!$data['isValid']) {
+            $data = InitData::isValid($request->get('init_data'), '7795322093:AAF-_BnNky9yBa_u3Xl7VhoI-8H5QUUtxx0', true);
+        }
 
         if ($data['isValid']) {
             return response()->json($userServices->userResponse($data));
