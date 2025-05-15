@@ -12,7 +12,7 @@ class UserUpdateRequest extends FormRequest
             'name' => ['required'],
             'password' => ['required', 'min:6'],
             'email' => ['required', 'email'],
-            'persons' => ['required'],
+            'family' => ['required'],
             'selectedTimes' => ['required'],
         ];
     }

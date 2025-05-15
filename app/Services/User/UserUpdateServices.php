@@ -23,7 +23,7 @@ class UserUpdateServices
         $this->updateUserQuery($data);
 
         (new UserFamilyServices(
-            persons: $data['persons'],
+            persons: $data['family'],
             times: $data['selectedTimes']
         ))->update();
 
