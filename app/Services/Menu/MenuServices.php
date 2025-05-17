@@ -83,7 +83,7 @@ class MenuServices
         }
     }
 
-    protected function productsBuy(Dish $dish): void
+    public function productsBuy(Dish $dish): void
     {
         foreach ($dish->products as $product) {
             $userProduct = UserProducts::query()->where([['users_id', auth()->user()->id], ['product_id', $product->uuid]])->first();
@@ -96,9 +96,21 @@ class MenuServices
                 ]);
             } else {
                 $userProduct->count += $product->pivot->quantity;
+                $userProduct->status = false;
                 $userProduct->save();
             }
         }
     }
 
+    public function productsBuyDelete(Dish $dish): void
+    {
+        foreach ($dish->products as $product) {
+            $userProduct = UserProducts::query()->where([['users_id', auth()->user()->id], ['product_id', $product->uuid]])->first();
+
+            if ($userProduct) {
+                $userProduct->count -= $product->pivot->quantity;
+                $userProduct->save();
+            }
+        }
+    }
 }

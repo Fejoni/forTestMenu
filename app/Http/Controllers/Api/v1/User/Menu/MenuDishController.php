@@ -9,6 +9,7 @@ use App\Models\Dish\DishCategory;
 use App\Models\Dish\DishTime;
 use App\Models\FoodMenuDishProduct;
 use App\Models\Telegram\FoodMenu;
+use App\Services\Menu\MenuServices;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -31,10 +32,13 @@ class MenuDishController extends Controller
     }
     public function delete(Request $request): JsonResponse
     {
-        if (FoodMenuDishProduct::query()->where([['uuid', $request->get('id')]])->exists()) {
+        $foodMenuDishProduct = FoodMenuDishProduct::query()->where([['uuid', $request->get('id')]])->first();
+        if ($foodMenuDishProduct) {
             FoodMenuDishProduct::query()->where([
                 ['uuid', $request->get('id')]
             ])->delete();
+
+            (new MenuServices())->productsBuyDelete(Dish::query()->where('uuid', $foodMenuDishProduct->dish_id)->with('products')->first());
 
             return response()->json([
                 'status' => 'success',
@@ -47,12 +51,18 @@ class MenuDishController extends Controller
     }
     public function replacement(Request $request): JsonResponse
     {
-        if (FoodMenuDishProduct::query()->where([
+        $foodMenuDishProduct = FoodMenuDishProduct::query()->where([
             ['uuid', $request->get('old')]
-        ])->exists()) {
-            $dish = Dish::query()->where('uuid', $request->get('new'))->first();
+        ])->first();
+
+        if ($foodMenuDishProduct) {
+            $dish = Dish::query()->where('uuid', $request->get('new'))->with('products')->first();
+            $oldDish = Dish::query()->where('uuid', $foodMenuDishProduct->dish_id)->with('products')->first();
 
             if ($dish) {
+                (new MenuServices())->productsBuyDelete($oldDish);
+                (new MenuServices())->productsBuy($dish);
+
                 FoodMenuDishProduct::query()
                     ->where([
                         ['uuid', $request->get('old')]
@@ -75,7 +85,7 @@ class MenuDishController extends Controller
         ], 403);
     }
 
-    public function append(Request $request)
+    public function append(Request $request): JsonResponse
     {
         $request->validate([
             'new' => ['required'],
@@ -91,7 +101,7 @@ class MenuDishController extends Controller
             ], 403);
         }
 
-        $dish = Dish::query()->where('uuid', $request->get('new'))->first();
+        $dish = Dish::query()->where('uuid', $request->get('new'))->with('products')->first();
 
         if (!$dish) {
             return response()->json([
@@ -109,6 +119,8 @@ class MenuDishController extends Controller
             'food_menus_id' => $foodMenu->uuid,
             'dish_id' => $dish->uuid,
         ]);
+
+        (new MenuServices())->productsBuy($dish);
 
         return response()->json([
             'message' => 'Вы успешно добавили дополнительное блюдо'
