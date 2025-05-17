@@ -5,6 +5,7 @@ namespace App\Models\Product;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Product extends UuidModel
 {
@@ -23,4 +24,15 @@ class Product extends UuidModel
     {
         return $this->belongsToMany(ProductShop::class);
     }
+
+    public function unit(): HasOne
+    {
+        return $this->hasOne(ProductUnit::class, 'uuid', 'unit_id');
+    }
+
+    public function category(): HasOne
+    {
+        return $this->hasOne(ProductCategory::class, 'uuid', 'categories_id');
+    }
+
 }

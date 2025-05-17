@@ -6,6 +6,7 @@ use App\Models\Dish\Dish;
 use App\Models\Dish\DishTime;
 use App\Models\FoodMenuDishProduct;
 use App\Models\Telegram\FoodMenu;
+use App\Models\User\UserProducts;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\App;
@@ -29,47 +30,48 @@ class MenuServices
         return $dates;
     }
 
-    public function generate()
+    public function generate(): void
     {
         $foods = [];
-        $dishTimes = DishTime::all();
+        $dishTimes = DishTime::query()->get();
 
         foreach ($this->getDates() as $date) {
-            $usedDishUuids = []; // UUID блюд, уже добавленных на эту дату
+            $usedDishUuids = [];
 
             foreach ($dishTimes as $dishTime) {
                 $count = rand(1, 2);
 
+                $foodMenu = FoodMenu::query()->create([
+                    'dish_time_id' => $dishTime->uuid,
+                    'users_id' => auth()->user()->id,
+                    'day' => $date,
+                ]);
+
                 for ($i = 0; $i < $count; $i++) {
-                    // Пытаемся найти блюдо, исключая уже выбранные
                     $dish = Dish::query()
                         ->whereHas('times', function ($query) use ($dishTime) {
                             $query->where('dish_dish_time.time_id', $dishTime->uuid);
                         })
                         ->whereNotIn('uuid', $usedDishUuids)
                         ->inRandomOrder()
+                        ->with('products')
                         ->first();
 
-                    // Если ничего не нашли, пробуем взять любое подходящее по времени
                     if (!$dish) {
                         $dish = Dish::query()
                             ->whereHas('times', function ($query) use ($dishTime) {
                                 $query->where('dish_dish_time.time_id', $dishTime->uuid);
                             })
                             ->inRandomOrder()
+                            ->with('products')
                             ->first();
                     }
 
                     if ($dish) {
+                        $this->productsBuy($dish);
                         $usedDishUuids[] = $dish->uuid;
 
                         $foods[$date][$dishTime->name][] = $dish;
-
-                        $foodMenu = FoodMenu::query()->create([
-                            'dish_time_id' => $dishTime->uuid,
-                            'users_id' => auth()->user()->id,
-                            'day' => $date,
-                        ]);
 
                         FoodMenuDishProduct::query()->create([
                             'food_menus_id' => $foodMenu->uuid,
@@ -80,4 +82,23 @@ class MenuServices
             }
         }
     }
+
+    protected function productsBuy(Dish $dish): void
+    {
+        foreach ($dish->products as $product) {
+            $userProduct = UserProducts::query()->where([['users_id', auth()->user()->id], ['product_id', $product->uuid]])->first();
+
+            if (!$userProduct) {
+                UserProducts::query()->create([
+                    'product_id' => $product->uuid,
+                    'users_id' => auth()->user()->id,
+                    'count' => $product->pivot->quantity
+                ]);
+            } else {
+                $userProduct->count += $product->pivot->quantity;
+                $userProduct->save();
+            }
+        }
+    }
+
 }
