@@ -2,6 +2,7 @@
 
 namespace App\Models\Product;
 
+use App\Models\Dish\Dish;
 use App\Models\UuidModel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -35,4 +36,8 @@ class Product extends UuidModel
         return $this->hasOne(ProductCategory::class, 'uuid', 'categories_id');
     }
 
+    public function dishes(): BelongsToMany
+    {
+        return $this->belongsToMany(Dish::class, 'dish_product', 'product_id', 'dish_id');
+    }
 }

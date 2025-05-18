@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\User\Dish\DishController;
+use App\Http\Controllers\Api\v1\User\Recipes\RecipesController;
 use App\Http\Controllers\Api\v1\User\User\UserCheckoutController;
 use Illuminate\Support\Facades\Route;
 
@@ -17,6 +18,11 @@ Route::prefix('user')->group(function () {
                 Route::get('/', [DishController::class, 'time']);
                 Route::get('/default', [DishController::class, 'timeDefaultSelect']);
             });
+        });
+
+        Route::prefix('recipes')->group(function () {
+            Route::post('/filter', [RecipesController::class, 'filter']);
+            Route::get('/products', [RecipesController::class, 'products']);
         });
     });
 
