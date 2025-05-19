@@ -24,9 +24,10 @@ class MenuController extends Controller
                 ['day', $getDates[0]]
             ])
             ->exists()) {
+
             return response()->json([
                 'message' => 'Меню не сгенерировано'
-            ]);
+            ], 403);
         }
 
         return FoodMenu::query()

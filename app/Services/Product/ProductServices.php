@@ -14,5 +14,4 @@ class ProductServices
 
         return $ids;
     }
-
 }
