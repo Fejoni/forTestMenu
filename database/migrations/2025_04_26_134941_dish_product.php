@@ -17,7 +17,7 @@ return new class extends Migration
         Schema::create('dish_product', function (Blueprint $table) {
             $table->uuid('dish_id')->index();
             $table->uuid('product_id')->index();
-            $table->integer('quantity');
+            $table->float('quantity');
 
             $table->foreign('dish_id')->references('uuid')->on('dishes')->onDelete('cascade');
             $table->foreign('product_id')->references('uuid')->on('products')->onDelete('cascade');
@@ -25,26 +25,25 @@ return new class extends Migration
             $table->primary(['dish_id', 'product_id']);
         });
 
-        $dish1 = Dish::query()->first()?->uuid;
-        $dish2 = Dish::query()->skip(1)->first()?->uuid;
-
-        $product1 = Product::query()->first()?->uuid;
-        $product2 = Product::query()->skip(1)->first()?->uuid;
-
-        $dishProducts = [
-            [
-                'dish_id' => $dish1,
-                'product_id' => $product1,
-                'quantity' => 2,
-            ],
-            [
-                'dish_id' => $dish1,
-                'product_id' => $product2,
-                'quantity' => 1,
-            ],
-        ];
-
-        DB::table('dish_product')->insert($dishProducts);
+//        $dish1 = Dish::query()->first()?->uuid;
+//        $dish2 = Dish::query()->skip(1)->first()?->uuid;
+//
+//        $product1 = Product::query()->first()?->uuid;
+//        $product2 = Product::query()->skip(1)->first()?->uuid;
+//        $dishProducts = [
+//            [
+//                'dish_id' => $dish1,
+//                'product_id' => $product1,
+//                'quantity' => 2,
+//            ],
+//            [
+//                'dish_id' => $dish1,
+//                'product_id' => $product2,
+//                'quantity' => 1,
+//            ],
+//        ];
+//
+//        DB::table('dish_product')->insert($dishProducts);
     }
 
     /**
