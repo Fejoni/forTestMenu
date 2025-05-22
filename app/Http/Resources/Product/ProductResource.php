@@ -36,7 +36,7 @@ class ProductResource extends JsonResource
             'shops' => ShopResource::collection($this->shops),
             'count' => $this->count,
             'protein' => $this->protein,
-            'fat' => $this->fat,
+            'fat' => $this->fats,
             'carbohydrates' => $this->carbohydrates,
             'calories' => $this->calories,
         ];
