@@ -85,19 +85,21 @@ class MenuServices
 
     public function productsBuy(Dish $dish): void
     {
-        foreach ($dish->products as $product) {
-            $userProduct = UserProducts::query()->where([['users_id', auth()->user()->id], ['product_id', $product->uuid]])->first();
+        if (count($dish->products) > 0) {
+            foreach ($dish->products as $product) {
+                $userProduct = UserProducts::query()->where([['users_id', auth()->user()->id], ['product_id', $product->uuid]])->first();
 
-            if (!$userProduct) {
-                UserProducts::query()->create([
-                    'product_id' => $product->uuid,
-                    'users_id' => auth()->user()->id,
-                    'count' => $product->pivot->quantity
-                ]);
-            } else {
-                $userProduct->count += $product->pivot->quantity;
-                $userProduct->status = false;
-                $userProduct->save();
+                if (!$userProduct) {
+                    UserProducts::query()->create([
+                        'product_id' => $product->uuid,
+                        'users_id' => auth()->user()->id,
+                        'count' => $product->pivot->quantity
+                    ]);
+                } else {
+                    $userProduct->count += $product->pivot->quantity;
+                    $userProduct->status = false;
+                    $userProduct->save();
+                }
             }
         }
     }
