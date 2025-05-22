@@ -36,7 +36,7 @@ class ProductUpdateServices extends ProductServices
             'divisions_id' => $data['division']['id'] ?? null,
             'count' => $data['count'] ?? null,
             'protein' => $data['protein'] ?? null,
-            'fat' => $data['fat'] ?? null,
+            'fats' => $data['fat'] ?? null,
             'carbohydrates' => $data['carbohydrates'] ?? null,
             'calories' => $data['calories']?? null,
         ]);
