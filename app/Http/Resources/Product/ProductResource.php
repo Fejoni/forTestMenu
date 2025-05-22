@@ -34,7 +34,11 @@ class ProductResource extends JsonResource
             'category' => new CategoryResource(ProductCategory::query()->where('uuid', $this->categories_id)->first()),
             'division' => new DivisionResource(ProductDivision::query()->where('uuid', $this->divisions_id)->first()),
             'shops' => ShopResource::collection($this->shops),
-            'count' => $this->count
+            'count' => $this->count,
+            'protein' => $this->protein,
+            'fat' => $this->fat,
+            'carbohydrates' => $this->carbohydrates,
+            'calories' => $this->calories,
         ];
     }
 }
