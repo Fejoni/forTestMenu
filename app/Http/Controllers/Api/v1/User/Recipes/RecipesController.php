@@ -14,38 +14,47 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class RecipesController extends Controller
 {
-    public function filter(Request $request)
+    public function filter(Request $request): JsonResponse
     {
         $categories = DishCategory::query()->get();
-        $dish = [];
+        $productsData = $request->get('data');
 
-        foreach ($categories as $category) {
-            $dish[$category->name] = DishResource::collection(
-                Dish::query()
-                    ->where('category_id', $category->uuid)
-                    ->get()
-            );
-        }
-
-        $mainArrayKeys = array_keys($request->data);
         $productsID = [];
+        $productsQuantities = [];
 
-        foreach ($mainArrayKeys as $key) {
-            foreach ($request->data[$key] as $datum) {
-                $productsID[] = $datum['uuid'];
-            }
+        foreach ($productsData as $data) {
+            $productsID[] = $data['uuid'];
+            $productsQuantities[$data['uuid']] = $data['quantity'];
         }
 
         $filteredDishes = [];
 
-        foreach ($dish as $categoryName => $dishes) {
-            $filteredDishes[$categoryName] = DishResource::collection(
-                Dish::query()
-                    ->where('category_id', $categories->where('name', $categoryName)->first()->uuid)
-                    ->whereHas('products', function ($query) use ($productsID) {
-                        $query->whereIn('products.uuid', $productsID);
-                    })
-                    ->get()
+        foreach ($categories as $category) {
+            $dishes = Dish::query()
+                ->where('category_id', $category->uuid)
+                ->with(['products' => function($query) use ($productsID) {
+                    $query->whereIn('products.uuid', $productsID);
+                }])
+                ->get();
+
+
+            $filteredDishes[$category->name] = DishResource::collection(
+                $dishes->filter(function ($dish) use ($productsQuantities) {
+                    if ($dish->products->isEmpty()) {
+                        return false;
+                    }
+
+                    // Check if all required products are available in sufficient quantity
+                    foreach ($dish->products as $product) {
+                        $requiredQuantity = $product->pivot->quantity;
+                        $availableQuantity = $productsQuantities[$product->uuid] ?? 0;
+
+                        if ($availableQuantity < $requiredQuantity) {
+                            return false;
+                        }
+                    }
+                    return true;
+                })
             );
         }
 

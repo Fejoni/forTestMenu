@@ -10,7 +10,7 @@ class UserUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'password' => ['required', 'min:6'],
+            'password' => ['min:6'],
             'email' => ['required', 'email'],
             'family' => ['required'],
             'selectedTimes' => ['required'],

@@ -35,7 +35,7 @@ class UserUpdateServices
         User::query()->where('id', auth()->user()->id)->update([
             'name' => $data['name'],
             'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'password' => isset($data['password']) ? Hash::make($data['password']) : null,
         ]);
     }
 }
