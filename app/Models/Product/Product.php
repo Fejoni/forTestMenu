@@ -19,6 +19,10 @@ class Product extends UuidModel
         'categories_id',
         'divisions_id',
         'count',
+        'protein',
+        'carbohydrates',
+        'fats',
+        'calories',
     ];
 
     public function shops(): BelongsToMany

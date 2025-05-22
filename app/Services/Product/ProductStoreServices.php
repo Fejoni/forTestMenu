@@ -33,6 +33,10 @@ class ProductStoreServices extends ProductServices
             'categories_id' => $data['category']['id'] ?? null,
             'divisions_id' => $data['division']['id'] ?? null,
             'count' => $data['count'] ?? null,
+            'protein' => $data['protein'] ?? null,
+            'fat' => $data['fat'] ?? null,
+            'carbohydrates' => $data['carbohydrates'] ?? null,
+            'calories' => $data['calories']?? null,
         ]);
 
         $product->shops()->attach($this->shops($data['shops']));

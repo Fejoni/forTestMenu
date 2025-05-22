@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('name');
             $table->float('calories')->nullable();
             $table->string('photo')->nullable();
-            $table->string('recipe')->nullable();
+            $table->text('recipe')->nullable();
             $table->boolean('is_premium');
             $table->float('protein')->nullable();
             $table->float('carbohydrates')->nullable();
