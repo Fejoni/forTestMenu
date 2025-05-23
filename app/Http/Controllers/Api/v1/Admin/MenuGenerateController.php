@@ -26,6 +26,7 @@ class MenuGenerateController extends Controller
                 $dish->protein = $item['proteins'];
                 $dish->carbohydrates = $item['carbs'];
                 $dish->fats = $item['fats'];
+                $dish->is_premium = 0;
                 $dish->recipe = $item['recipe_no_tags'];
                 $dish->portions = 1;
                 $dish->weight = 100;
