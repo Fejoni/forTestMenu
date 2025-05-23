@@ -47,11 +47,7 @@ class MenuGenerateController extends Controller
                         $product->save();
                     }
 
-                    $dishProduct = new FoodMenuDishProduct;
-                    $dishProduct->quantity = $unit['count'] != null ? $unit['count'] : 1;
-                    $dishProduct->dish_id =  $dish->uuid;
-                    $dishProduct->product_id =  $product->uuid;
-                    $dishProduct->save();
+                    $dish->products()->attach($product->uuid, ['quantity' => ($unit['count'] != null ? $unit['count'] : 1)]);
                 }
 
                 $url = 'https://neuroimg.art/api/v1/generate';
