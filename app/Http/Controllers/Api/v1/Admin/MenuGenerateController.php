@@ -75,7 +75,7 @@ class MenuGenerateController extends Controller
                 curl_setopt($curl, CURLOPT_URL, $url);
                 curl_setopt($curl, CURLOPT_POST, true);
 
-                $result = curl_exec($curl);
+                $result = json_decode(curl_exec($curl), true);
                 if($result['status'] == 'SUCCESS'){
                     $dish->photo =  $result['image_url'];
                     $dish->save();
