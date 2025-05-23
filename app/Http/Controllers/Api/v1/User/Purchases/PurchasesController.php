@@ -69,7 +69,7 @@ class PurchasesController extends Controller
     {
         $request->validate([
             'product_id' => ['required', 'exists:products,uuid'],
-            'quantity' => ['required', 'integer', 'min:1'],
+            'quantity' => ['required', 'numeric', 'min:1'],
         ]);
 
         UserProducts::query()->where([['users_id', auth()->id()], ['product_id', $request->get('product_id')]])->update([
