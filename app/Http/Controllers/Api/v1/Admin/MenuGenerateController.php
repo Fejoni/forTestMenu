@@ -81,7 +81,6 @@ class MenuGenerateController extends Controller
                     $dish->save();
                 }
 
-                dd($dish);
             }
         }
     }
