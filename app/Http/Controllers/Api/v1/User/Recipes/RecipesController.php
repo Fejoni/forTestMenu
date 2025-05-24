@@ -68,7 +68,7 @@ class RecipesController extends Controller
         $filterProducts = [];
 
         foreach ($products as $product) {
-            $filterProducts[$product->category->name][] = $product->toArray();
+                $filterProducts[$product->category->name ?? ''][] = $product->toArray();
         }
 
         return response()->json($filterProducts);
