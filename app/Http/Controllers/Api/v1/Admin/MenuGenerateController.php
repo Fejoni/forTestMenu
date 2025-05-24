@@ -17,7 +17,6 @@ class MenuGenerateController extends Controller
     {
         $data = json_decode($request->text, true);
 
-
         foreach ($data as $item){
             if(!Dish::query()->where('name', $item['name'])->first()){
                 $dish = new Dish;
@@ -57,7 +56,7 @@ class MenuGenerateController extends Controller
                 $post_data = [
                     "token"=>"36327fcc-de17-4307-a3b1-0aef239f50c4",
                     //  "model"=>"AcornIsSpinningFLUX-DevV1.1",
-                    "model"=>"MaxRealFLux-v3.0fp8",
+                    "model"=> "MaxRealFLux-v3.0fp8",
                     "prompt"=>"Блюдо ".$item['name']." простое",
                     "width"=> 512,
                     "height"=> 512,
