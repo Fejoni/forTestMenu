@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Dish\Dish;
+use App\Models\Dish\DishCategory;
 use App\Models\Dish\DishSuitable;
 use App\Models\Dish\DishTime;
 use App\Models\Dish\DishType;
@@ -18,11 +19,19 @@ class ImportDishes extends Command
     protected $signature = 'import:dishes {file?}';
     protected $description = 'Импортирует блюда из JSON файла';
 
+    public function rand($val)
+    {
+        $min = -3;
+        $max = 4;
+        return $val+($min + ($max - $min) * (mt_rand() / mt_getrandmax()));
+    }
+
     public function handle(): int
     {
         $filePath = $this->argument('file') ?? $this->ask('Введите путь к JSON-файлу (например: public/data.json)');
 
-        $productDivision = ProductDivision::query()->firstOrCreate(['name' => 'Другое']);
+        $productCategory = ProductCategory::query()->firstOrCreate(['name' => 'Другое']);
+        $productCategory->save();
 
         if (!file_exists($filePath)) {
             // Попробуем привести путь к абсолютному, если он относительный
@@ -46,7 +55,7 @@ class ImportDishes extends Command
         }
 
         $dishTimes = DishTime::query();
-
+        $dishCategory = DishCategory::query();
 
         foreach ($data as $item) {
             $this->info("Создаем блюдо: {$item['name']}");
@@ -59,25 +68,32 @@ class ImportDishes extends Command
 
                 $dish = new Dish;
                 $dish->name = $item['name'];
-                $dish->calories = $item['calories'];
-                $dish->protein = $item['proteins'];
-                $dish->carbohydrates = $item['carbs'];
-                $dish->fats = $item['fats'];
+                $dish->calories = $this->rand($item['calories']);
+                $dish->protein = $this->rand($item['proteins']);
+                $dish->carbohydrates = $this->rand($item['carbs']);
+                $dish->fats = $this->rand($item['fats']);
                 $dish->is_premium = 0;
                 $dish->recipe = $item['recipe_no_tags'];
                 $dish->portions = $item['recipes_portions'];
                 $dish->timeText = $item['time'];
-                $dish->weight = $weight;
+                $dish->weight = rand(-30, 30)+$weight;
                 $dish->save();
 
                 foreach ($item['type'] as $type) {
-                    $time = $dishTimes->first('name', $type)->first();
+                    $time = $dishTimes->where('name', $type)->first();
                     if($time){
                         $dish->times()->attach($time->uuid);
                     }
                     else{
-                        $suitable = DishSuitable::query()->firstOrCreate(['name' => $type]);
-                        $dish->suitables()->attach($suitable);
+                        $catDish = $dishCategory->where('name', $type)->first();
+                        if($catDish){
+                            $dish->category_id = $catDish->uuid;
+                            $dish->save();
+                        }
+                        else{
+                            $suitable = DishSuitable::query()->firstOrCreate(['name' => $type]);
+                            $dish->suitables()->attach($suitable);
+                        }
                     }
                 }
 
@@ -87,7 +103,7 @@ class ImportDishes extends Command
                     $product = Product::query()->firstOrCreate(
                         ['name' => $ingredient['name']],
                         ['unit_id' => $unit->uuid],
-                        ['divisions_id', $productDivision->uuid]
+                        ['categories_id', $productCategory->uuid]
                     );
 
                     $dish->products()->syncWithoutDetaching([
@@ -95,39 +111,39 @@ class ImportDishes extends Command
                     ]);
                 }
 
-                $url = 'https://neuroimg.art/api/v1/generate';
-                $headers = ['Content-Type: application/json'];
-                $post_data = [
-                    "token" => "36327fcc-de17-4307-a3b1-0aef239f50c4",
-                    "model" => "MaxRealFLux-v3.0fp8",
-                    "prompt" => "Блюдо " . $item['name'] . " простое",
-                    "width" => 512,
-                    "height" => 512,
-                    "steps" => 30,
-                    "stream" => false
-                ];
-
-                $curl = curl_init();
-                curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($post_data));
-                curl_setopt($curl, CURLOPT_URL, $url);
-                curl_setopt($curl, CURLOPT_POST, true);
-
-                $result = json_decode(curl_exec($curl), true);
-                curl_close($curl);
-
-                if (isset($result['status']) && $result['status'] === 'SUCCESS') {
-                    $imageUrl = $result['image_url'];
-                    $imageContents = file_get_contents($imageUrl);
-
-                    if ($imageContents) {
-                        $fileName = 'dishes/' . uniqid() . '.jpg';
-                        Storage::disk('public')->put($fileName, $imageContents);
-                        $dish->photo = url(Storage::url($fileName));
-                        $dish->save();
-                    }
-                }
+//                $url = 'https://neuroimg.art/api/v1/generate';
+//                $headers = ['Content-Type: application/json'];
+//                $post_data = [
+//                    "token" => "36327fcc-de17-4307-a3b1-0aef239f50c4",
+//                    "model" => "MaxRealFLux-v3.0fp8",
+//                    "prompt" => "Блюдо " . $item['name'] . " простое",
+//                    "width" => 512,
+//                    "height" => 512,
+//                    "steps" => 30,
+//                    "stream" => false
+//                ];
+//
+//                $curl = curl_init();
+//                curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+//                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+//                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($post_data));
+//                curl_setopt($curl, CURLOPT_URL, $url);
+//                curl_setopt($curl, CURLOPT_POST, true);
+//
+//                $result = json_decode(curl_exec($curl), true);
+//                curl_close($curl);
+//
+//                if (isset($result['status']) && $result['status'] === 'SUCCESS') {
+//                    $imageUrl = $result['image_url'];
+//                    $imageContents = file_get_contents($imageUrl);
+//
+//                    if ($imageContents) {
+//                        $fileName = 'dishes/' . uniqid() . '.jpg';
+//                        Storage::disk('public')->put($fileName, $imageContents);
+//                        $dish->photo = url(Storage::url($fileName));
+//                        $dish->save();
+//                    }
+//                }
 
                 $this->info("✅ Добавлено блюдо: {$dish->name}");
             } else {

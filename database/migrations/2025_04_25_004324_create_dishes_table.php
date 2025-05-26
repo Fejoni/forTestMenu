@@ -48,7 +48,7 @@ return new class extends Migration
             $table->foreign('dish_id')->references('uuid')->on('dishes')->onDelete('cascade');
             $table->foreign('time_id')->references('uuid')->on('dish_times')->onDelete('cascade');
 
-            $table->primary(['dish_id', 'time_id']);
+//            $table->primary(['dish_id', 'time_id']);
         });
 
 
@@ -59,7 +59,7 @@ return new class extends Migration
             $table->foreign('dish_id')->references('uuid')->on('dishes')->onDelete('cascade');
             $table->foreign('suitable_id')->references('uuid')->on('dish_suitables')->onDelete('cascade');
 
-            $table->primary(['dish_id', 'suitable_id']);
+//            $table->primary(['dish_id', 'suitable_id']);
         });
 
 
