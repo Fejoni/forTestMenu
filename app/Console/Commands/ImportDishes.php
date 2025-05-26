@@ -62,8 +62,8 @@ class ImportDishes extends Command
                         ['unit_id' => $unit->uuid]
                     );
 
-                    $dish->products()->attach($product->uuid, [
-                        'quantity' => $ingredient['count'] ?? 1
+                    $dish->products()->syncWithoutDetaching([
+                        $product->uuid => ['quantity' => $ingredient['count'] ?? 1]
                     ]);
                 }
 
@@ -90,8 +90,15 @@ class ImportDishes extends Command
                 curl_close($curl);
 
                 if (isset($result['status']) && $result['status'] === 'SUCCESS') {
-                    $dish->photo = $result['image_url'];
-                    $dish->save();
+                    $imageUrl = $result['image_url'];
+                    $imageContents = file_get_contents($imageUrl);
+
+                    if ($imageContents) {
+                        $fileName = 'dishes/' . uniqid() . '.jpg';
+                        Storage::disk('public')->put($fileName, $imageContents);
+                        $dish->photo = url(Storage::url($fileName));
+                        $dish->save();
+                    }
                 }
 
                 $this->info("✅ Добавлено блюдо: {$dish->name}");
