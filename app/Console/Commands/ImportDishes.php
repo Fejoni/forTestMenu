@@ -45,7 +45,7 @@ class ImportDishes extends Command
             return 1;
         }
 
-        $dishTimes = DishTime::all();
+        $dishTimes = DishTime::query();
 
 
         foreach ($data as $item) {
