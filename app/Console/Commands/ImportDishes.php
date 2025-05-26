@@ -106,9 +106,10 @@ class ImportDishes extends Command
                         ['categories_id', $productCategory->uuid]
                     );
 
+                    $quantity =  str_replace(',', '.', $ingredient['count']);
                     $dish->products()->syncWithoutDetaching([
                         $product->uuid => ['quantity' =>
-                            $ingredient['count'] ? str_replace(',', '.', $ingredient['count']) : 1
+                            $quantity ?? 1
                         ]
                     ]);
                 }
