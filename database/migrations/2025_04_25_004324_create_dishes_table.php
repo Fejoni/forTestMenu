@@ -29,6 +29,7 @@ return new class extends Migration
             $table->float('fats')->nullable();
             $table->float('portions')->nullable();
             $table->float('cookingTime')->nullable();
+            $table->string('timeText')->nullable();
             $table->float('weight')->nullable();
 
             $table->uuid('category_id')->nullable()->index();

@@ -3,7 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Models\Dish\Dish;
+use App\Models\Dish\DishSuitable;
+use App\Models\Dish\DishTime;
+use App\Models\Dish\DishType;
 use App\Models\Product\Product;
+use App\Models\Product\ProductCategory;
+use App\Models\Product\ProductDivision;
 use App\Models\Product\ProductUnit;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
@@ -16,6 +21,8 @@ class ImportDishes extends Command
     public function handle(): int
     {
         $filePath = $this->argument('file') ?? $this->ask('Введите путь к JSON-файлу (например: public/data.json)');
+
+        $productDivision = ProductDivision::query()->firstOrCreate(['name' => 'Другое']);
 
         if (!file_exists($filePath)) {
             // Попробуем привести путь к абсолютному, если он относительный
@@ -38,10 +45,18 @@ class ImportDishes extends Command
             return 1;
         }
 
+        $dishTimes = DishTime::all();
+
 
         foreach ($data as $item) {
             $this->info("Создаем блюдо: {$item['name']}");
             if (!Dish::query()->where('name', $item['name'])->exists()) {
+
+                $weight = 100;
+                if(isset($item['table']) AND isset($item['table']['total']) AND isset($item['table']['total']['weight'])){
+                    $weight = $item['table']['total']['weight'];
+                }
+
                 $dish = new Dish;
                 $dish->name = $item['name'];
                 $dish->calories = $item['calories'];
@@ -50,16 +65,29 @@ class ImportDishes extends Command
                 $dish->fats = $item['fats'];
                 $dish->is_premium = 0;
                 $dish->recipe = $item['recipe_no_tags'];
-                $dish->portions = 1;
-                $dish->weight = 100;
+                $dish->portions = $item['recipes_portions'];
+                $dish->timeText = $item['time'];
+                $dish->weight = $weight;
                 $dish->save();
+
+                foreach ($item['type'] as $type) {
+                    $time = $dishTimes->first('name', $type)->first();
+                    if($time){
+                        $dish->times()->attach($time->uuid);
+                    }
+                    else{
+                        $suitable = DishSuitable::query()->firstOrCreate(['name' => $type]);
+                        $dish->suitables()->attach($suitable);
+                    }
+                }
 
                 foreach ($item['ingredients'] as $ingredient) {
                     $unit = ProductUnit::query()->firstOrCreate(['name' => $ingredient['unit']]);
 
                     $product = Product::query()->firstOrCreate(
                         ['name' => $ingredient['name']],
-                        ['unit_id' => $unit->uuid]
+                        ['unit_id' => $unit->uuid],
+                        ['divisions_id', $productDivision->uuid]
                     );
 
                     $dish->products()->syncWithoutDetaching([
