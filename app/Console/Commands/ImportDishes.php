@@ -107,7 +107,9 @@ class ImportDishes extends Command
                     );
 
                     $dish->products()->syncWithoutDetaching([
-                        $product->uuid => ['quantity' => $ingredient['count'] ?? 1]
+                        $product->uuid => ['quantity' =>
+                            $ingredient['count'] ? str_replace(',', '.', $ingredient['count']) : 1
+                        ]
                     ]);
                 }
 
