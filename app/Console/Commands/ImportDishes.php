@@ -54,8 +54,7 @@ class ImportDishes extends Command
             return 1;
         }
 
-        $dishTimes = DishTime::query();
-        $dishCategory = DishCategory::query();
+
 
         foreach ($data as $item) {
             $this->info("Создаем блюдо: {$item['name']}");
@@ -68,24 +67,24 @@ class ImportDishes extends Command
 
                 $dish = new Dish;
                 $dish->name = $item['name'];
-                $dish->calories = $this->rand($item['calories']);
-                $dish->protein = $this->rand($item['proteins']);
-                $dish->carbohydrates = $this->rand($item['carbs']);
-                $dish->fats = $this->rand($item['fats']);
+                $dish->calories = number_format($this->rand($item['calories']), 1);
+                $dish->protein = number_format($this->rand($item['proteins']), 1);
+                $dish->carbohydrates = number_format($this->rand($item['carbs']), 1);
+                $dish->fats = number_format($this->rand($item['fats']), 1);
                 $dish->is_premium = 0;
                 $dish->recipe = $item['recipe_no_tags'];
                 $dish->portions = $item['recipes_portions'];
                 $dish->timeText = $item['time'];
-                $dish->weight = rand(-30, 30)+$weight;
+                $dish->weight = number_format(rand(-30, 30)+$weight, 1);
                 $dish->save();
 
                 foreach ($item['type'] as $type) {
-                    $time = $dishTimes->where('name', $type)->first();
+                    $time = DishTime::query()->where('name', $type)->first();
                     if($time){
                         $dish->times()->attach($time->uuid);
                     }
                     else{
-                        $catDish = $dishCategory->where('name', $type)->first();
+                        $catDish = DishCategory::query()->where('name', $type)->first();
                         if($catDish){
                             $dish->category_id = $catDish->uuid;
                             $dish->save();
