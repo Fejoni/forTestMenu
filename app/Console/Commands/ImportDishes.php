@@ -30,8 +30,8 @@ class ImportDishes extends Command
     {
         $filePath = $this->argument('file') ?? $this->ask('Введите путь к JSON-файлу (например: public/data.json)');
 
-        $productCategory = ProductCategory::query()->firstOrCreate(['name' => 'Другое']);
-        $productCategory->save();
+        $productCategory = ProductCategory::query()->where('name',  'Другое')->first();
+
 
         if (!file_exists($filePath)) {
             // Попробуем привести путь к абсолютному, если он относительный
