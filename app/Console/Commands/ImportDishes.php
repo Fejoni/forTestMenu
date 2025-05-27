@@ -120,11 +120,11 @@ class ImportDishes extends Command
                 $headers = ['Content-Type: application/json'];
                 $post_data = [
                     "token" => "36327fcc-de17-4307-a3b1-0aef239f50c4",
-                    "model" => "MaxRealFLux-v3.0fp8",
+                    "model" => "HUBG_Flux.1丨BeautifulRealistic-Alpha",
                     "prompt" => "Блюдо " . $item['name'] . " простое",
-                    "width" => 512,
-                    "height" => 512,
-                    "steps" => 10,
+                    "width" => 1024,
+                    "height" => 1024,
+                    "steps" => 30,
                     "stream" => false
                 ];
 
