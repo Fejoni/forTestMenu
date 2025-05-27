@@ -75,7 +75,7 @@ class ImportDishes extends Command
                 $dish->recipe = $item['recipe_no_tags'];
                 $dish->portions = $item['recipes_portions'];
                 $dish->timeText = $item['time'];
-                $dish->weight = number_format(rand(-30, 30)+$weight, 1);
+                $dish->weight = rand(-30, 30)+$weight;
                 $dish->save();
 
                 foreach ($item['type'] as $type) {
