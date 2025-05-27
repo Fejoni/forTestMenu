@@ -34,7 +34,7 @@ class MenuServices
     public function generate(): void
     {
         $foods = [];
-        $dishTimes = UserDishTime::query()->where('users_id', auth()->id())->with(['dishTime'])->orderBy('id', 'ASC')->get();
+        $dishTimes = UserDishTime::query()->where('user_id', auth()->id())->with(['dishTime'])->orderBy('id', 'ASC')->get();
 
         foreach ($this->getDates() as $date) {
             $usedDishUuids = [];
