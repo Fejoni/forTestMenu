@@ -116,39 +116,39 @@ class ImportDishes extends Command
                     ]);
                 }
 
-//                $url = 'https://neuroimg.art/api/v1/generate';
-//                $headers = ['Content-Type: application/json'];
-//                $post_data = [
-//                    "token" => "36327fcc-de17-4307-a3b1-0aef239f50c4",
-//                    "model" => "MaxRealFLux-v3.0fp8",
-//                    "prompt" => "Блюдо " . $item['name'] . " простое",
-//                    "width" => 512,
-//                    "height" => 512,
-//                    "steps" => 30,
-//                    "stream" => false
-//                ];
-//
-//                $curl = curl_init();
-//                curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-//                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-//                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($post_data));
-//                curl_setopt($curl, CURLOPT_URL, $url);
-//                curl_setopt($curl, CURLOPT_POST, true);
-//
-//                $result = json_decode(curl_exec($curl), true);
-//                curl_close($curl);
-//
-//                if (isset($result['status']) && $result['status'] === 'SUCCESS') {
-//                    $imageUrl = $result['image_url'];
-//                    $imageContents = file_get_contents($imageUrl);
-//
-//                    if ($imageContents) {
-//                        $fileName = 'dishes/' . uniqid() . '.jpg';
-//                        Storage::disk('public')->put($fileName, $imageContents);
-//                        $dish->photo = url(Storage::url($fileName));
-//                        $dish->save();
-//                    }
-//                }
+                $url = 'https://neuroimg.art/api/v1/generate';
+                $headers = ['Content-Type: application/json'];
+                $post_data = [
+                    "token" => "36327fcc-de17-4307-a3b1-0aef239f50c4",
+                    "model" => "MaxRealFLux-v3.0fp8",
+                    "prompt" => "Блюдо " . $item['name'] . " простое",
+                    "width" => 512,
+                    "height" => 512,
+                    "steps" => 10,
+                    "stream" => false
+                ];
+
+                $curl = curl_init();
+                curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
+                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($post_data));
+                curl_setopt($curl, CURLOPT_URL, $url);
+                curl_setopt($curl, CURLOPT_POST, true);
+
+                $result = json_decode(curl_exec($curl), true);
+                curl_close($curl);
+
+                if (isset($result['status']) && $result['status'] === 'SUCCESS') {
+                    $imageUrl = $result['image_url'];
+                    $imageContents = file_get_contents($imageUrl);
+
+                    if ($imageContents) {
+                        $fileName = 'dishes/' . uniqid() . '.jpg';
+                        Storage::disk('public')->put($fileName, $imageContents);
+                        $dish->photo = url(Storage::url($fileName));
+                        $dish->save();
+                    }
+                }
 
                 $this->info("✅ Добавлено блюдо: {$dish->name}");
             } else {
