@@ -106,6 +106,9 @@ class ImportDishes extends Command
                     );
 
                     $quantity =  str_replace(',', '.', $ingredient['count']);
+                    if($quantity == 'null' OR $quantity == null){
+                        $quantity = 1;
+                    }
                     $dish->products()->syncWithoutDetaching([
                         $product->uuid => ['quantity' =>
                             $quantity ?? 1
