@@ -12,11 +12,11 @@ class PurchasesController extends Controller
 {
     public function index(): JsonResponse
     {
-        $userProducts = UserProducts::query()->where('users_id', auth()->id())->with('product')->get();
+        $userProducts = UserProducts::query()->where('users_id', auth()->id())->with(['product'])->get();
         $categories = [];
 
         foreach ($userProducts as $userProduct) {
-            $categories[$userProduct->product->category->name][] = array_merge($userProduct->product->toArray(), ['count' => $userProduct->count, 'status' => $userProduct->status]);
+            $categories[$userProduct->product->division?->name][] = array_merge($userProduct->product->toArray(), ['count' => $userProduct->count, 'status' => $userProduct->status]);
         }
 
         return response()->json($categories);
@@ -24,13 +24,13 @@ class PurchasesController extends Controller
 
     public function products(): JsonResponse
     {
-        $products = Product::query()->select('name', 'image', 'uuid', 'categories_id')->with(['category'])->get();
+        $products = Product::query()->select('name', 'image', 'uuid', 'categories_id')->with(['division'])->get();
 
         $filterProducts = [];
 
         foreach ($products as $product) {
             if (!UserProducts::query()->where([['users_id', auth()->id()], ['product_id', $product->uuid]])->exists()) {
-                $filterProducts[$product->category->name][] = $product->toArray();
+                $filterProducts[$product->division?->name][] = $product->toArray();
             }
         }
 

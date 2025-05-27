@@ -63,12 +63,12 @@ class RecipesController extends Controller
 
     public function products(): JsonResponse
     {
-        $products = Product::query()->select('name', 'image', 'uuid', 'categories_id')->with(['category'])->get();
+        $products = Product::query()->select('name', 'image', 'uuid', 'categories_id')->with(['division'])->get();
 
         $filterProducts = [];
 
         foreach ($products as $product) {
-                $filterProducts[$product->category->name ?? ''][] = $product->toArray();
+                $filterProducts[$product->division?->name ?? ''][] = $product->toArray();
         }
 
         return response()->json($filterProducts);

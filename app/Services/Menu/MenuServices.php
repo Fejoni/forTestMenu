@@ -6,6 +6,7 @@ use App\Models\Dish\Dish;
 use App\Models\Dish\DishTime;
 use App\Models\FoodMenuDishProduct;
 use App\Models\Telegram\FoodMenu;
+use App\Models\User\UserDishTime;
 use App\Models\User\UserProducts;
 use Carbon\CarbonPeriod;
 use Illuminate\Support\Carbon;
@@ -33,7 +34,7 @@ class MenuServices
     public function generate(): void
     {
         $foods = [];
-        $dishTimes = DishTime::query()->get();
+        $dishTimes = UserDishTime::query()->where('users_id', auth()->id())->with(['dishTime'])->orderBy('id', 'ASC')->get();
 
         foreach ($this->getDates() as $date) {
             $usedDishUuids = [];
@@ -42,7 +43,7 @@ class MenuServices
                 $count = rand(1, 2);
 
                 $foodMenu = FoodMenu::query()->create([
-                    'dish_time_id' => $dishTime->uuid,
+                    'dish_time_id' => $dishTime->dishTime?->uuid,
                     'users_id' => auth()->user()->id,
                     'day' => $date,
                 ]);
@@ -50,7 +51,7 @@ class MenuServices
                 for ($i = 0; $i < $count; $i++) {
                     $dish = Dish::query()
                         ->whereHas('times', function ($query) use ($dishTime) {
-                            $query->where('dish_dish_time.time_id', $dishTime->uuid);
+                            $query->where('dish_dish_time.time_id', $dishTime->dishTime?->uuid);
                         })
                         ->whereNotIn('uuid', $usedDishUuids)
                         ->inRandomOrder()
@@ -60,7 +61,7 @@ class MenuServices
                     if (!$dish) {
                         $dish = Dish::query()
                             ->whereHas('times', function ($query) use ($dishTime) {
-                                $query->where('dish_dish_time.time_id', $dishTime->uuid);
+                                $query->where('dish_dish_time.time_id', $dishTime->dishTime?->uuid);
                             })
                             ->inRandomOrder()
                             ->with('products')
@@ -71,7 +72,7 @@ class MenuServices
                         $this->productsBuy($dish);
                         $usedDishUuids[] = $dish->uuid;
 
-                        $foods[$date][$dishTime->name][] = $dish;
+                        $foods[$date][$dishTime->dishTime?->name][] = $dish;
 
                         FoodMenuDishProduct::query()->create([
                             'food_menus_id' => $foodMenu->uuid,

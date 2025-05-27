@@ -40,6 +40,11 @@ class Product extends UuidModel
         return $this->hasOne(ProductCategory::class, 'uuid', 'categories_id');
     }
 
+    public function division(): HasOne
+    {
+        return $this->hasOne(ProductDivision::class, 'uuid', 'divisions_id');
+    }
+
     public function dishes(): BelongsToMany
     {
         return $this->belongsToMany(Dish::class, 'dish_product', 'product_id', 'dish_id');

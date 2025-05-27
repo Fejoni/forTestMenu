@@ -18,6 +18,6 @@ class UserProducts extends UuidModel
 
     public function product()
     {
-        return $this->belongsTo(Product::class, 'product_id', 'uuid')->with(['unit', 'category']);
+        return $this->belongsTo(Product::class, 'product_id', 'uuid')->with(['unit', 'category', 'division']);
     }
 }
