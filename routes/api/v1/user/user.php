@@ -6,6 +6,9 @@ use App\Http\Controllers\Api\v1\User\User\UserCheckoutController;
 use Illuminate\Support\Facades\Route;
 
 Route::prefix('user')->group(function () {
+    Route::post('login', [UserCheckoutController::class, 'login']);
+    Route::post('register', [UserCheckoutController::class, 'register']);
+
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('checkout', [UserCheckoutController::class, 'checkout']);
 
