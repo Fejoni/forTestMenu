@@ -32,10 +32,14 @@ Route::prefix('user')->group(function () {
 
         Route::prefix('products')->group(function () {
             Route::post('/create', [ProductController::class, 'create']);
+            Route::post('/update', [ProductController::class, 'update']);
+            Route::delete('/delete', [ProductController::class, 'delete']);
         });
 
         Route::prefix('dish')->group(function () {
             Route::post('/create', [DishController::class, 'create']);
+            Route::post('/update', [DishController::class, 'update']);
+            Route::delete('/delete', [DishController::class, 'delete']);
         });
 
         Route::prefix('file')->group(function () {

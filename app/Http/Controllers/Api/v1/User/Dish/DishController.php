@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Api\v1\User\Dish;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\v1\User\UserDishStoreRequest;
+use App\Http\Requests\v1\User\Dish\UserDishCreateRequest;
+use App\Http\Requests\v1\User\Dish\UserDishUpdateRequest;
 use App\Http\Resources\Dish\DishTimeResource;
 use App\Models\Dish\Dish;
 use App\Models\Dish\DishCategory;
 use App\Models\Dish\DishTime;
-use App\Models\Product\Product;
-use App\Models\Product\ProductDivision;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -31,7 +31,7 @@ class DishController extends Controller
         );
     }
 
-    public function create(UserDishStoreRequest $request)
+    public function create(UserDishCreateRequest $request): JsonResponse
     {
         $userId = auth()->id();
 
@@ -74,7 +74,72 @@ class DishController extends Controller
         $dish->times()->attach($request->get('dish_time_id'));
 
         return response()->json([
-           'message' => 'Блюдо успешно создано'
+            'message' => 'Блюдо успешно создано'
         ]);
     }
+
+    public function update(UserDishUpdateRequest $request)
+    {
+        $dish = Dish::query()
+            ->where('uuid', $request->get('id'))
+            ->where('users_id', auth()->id())
+            ->first();
+
+        if (!$dish) {
+            return response()->json([
+                'error' => 'Блюдо не найдено.'
+            ], 404);
+        }
+
+        if (!DishTime::query()->where('uuid', $request->get('dish_time_id'))->exists()) {
+            return response()->json([
+                'error' => 'Время не найдено'
+            ], 403);
+        }
+
+        if (!DishCategory::query()->where('uuid', $request->get('dish_category_id'))->exists()) {
+            return response()->json([
+                'error' => 'Категория не найдена'
+            ], 403);
+        }
+
+        $dish->update([
+            'name' => $request->get('name'),
+            'recipe' => $request->get('receipt'),
+            'photo' => $request->get('image'),
+            'cookingTime' => $request->get('cooking_time'),
+            'category_id' => $request->get('dish_category_id')
+        ]);
+
+        $dish->times()->sync($request->get('dish_time_id'));
+
+        return response()->json([
+           'message' => 'Блюдо успешно изменено'
+        ]);
+    }
+
+    public function delete(Request $request): JsonResponse
+    {
+        $request->validate([
+            'id' => ['required', 'exists:dishes,uuid']
+        ]);
+
+        $dish = Dish::query()
+            ->where('uuid', $request->get('id'))
+            ->where('users_id', auth()->id())
+            ->first();
+
+        if (!$dish) {
+            return response()->json([
+                'error' => 'Блюдо не найдено.'
+            ], 404);
+        }
+
+        $dish->delete();
+
+        return response()->json([
+           'message' => 'Блюдо успешно удалено'
+        ]);
+    }
+
 }
