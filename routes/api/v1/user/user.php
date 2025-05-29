@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Api\v1\Admin\Dish\DishTimeController;
 use App\Http\Controllers\Api\v1\Admin\Image\ImageUploadController;
+use App\Http\Controllers\Api\v1\Admin\Product\Category\CategoryController;
+use App\Http\Controllers\Api\v1\Admin\Product\Division\DivisionController;
 use App\Http\Controllers\Api\v1\User\Dish\DishController;
 use App\Http\Controllers\Api\v1\User\Product\ProductController;
 use App\Http\Controllers\Api\v1\User\Recipes\RecipesController;
@@ -23,6 +26,7 @@ Route::prefix('user')->group(function () {
                 Route::get('/', [DishController::class, 'time']);
                 Route::get('/default', [DishController::class, 'timeDefaultSelect']);
             });
+            Route::get('/categories', [\App\Models\Dish\DishCategory::class, 'index']);
         });
 
         Route::prefix('recipes')->group(function () {
@@ -34,6 +38,8 @@ Route::prefix('user')->group(function () {
             Route::post('/create', [ProductController::class, 'create']);
             Route::post('/update', [ProductController::class, 'update']);
             Route::delete('/delete', [ProductController::class, 'delete']);
+            Route::get('/divisions', [DivisionController::class, 'index']);
+            Route::get('/categories', [CategoryController::class, 'index']);
         });
 
         Route::prefix('dish')->group(function () {
@@ -45,6 +51,9 @@ Route::prefix('user')->group(function () {
         Route::prefix('file')->group(function () {
             Route::post('upload', [ImageUploadController::class, 'upload']);
         });
+
+
+
     });
 
     require_once __DIR__ . '/telegram.php';
