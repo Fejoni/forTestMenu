@@ -27,6 +27,10 @@ Route::prefix('user')->group(function () {
             Route::post('/filter', [RecipesController::class, 'filter']);
             Route::get('/products', [RecipesController::class, 'products']);
         });
+
+        Route::prefix('products')->group(function () {
+
+        });
     });
 
     require_once __DIR__ . '/telegram.php';

@@ -24,6 +24,10 @@ class MenuDishController extends Controller
             $dish[$category->name] = DishResource::collection(
                 Dish::query()
                     ->where('category_id', $category->uuid)
+                    ->where(function ($query) {
+                        $query->where('users_id', auth()->id())
+                            ->orWhereNull('users_id');
+                    })
                     ->get()
             );
         }
@@ -56,8 +60,23 @@ class MenuDishController extends Controller
         ])->first();
 
         if ($foodMenuDishProduct) {
-            $dish = Dish::query()->where('uuid', $request->get('new'))->with('products')->first();
-            $oldDish = Dish::query()->where('uuid', $foodMenuDishProduct->dish_id)->with('products')->first();
+            $dish = Dish::query()
+                ->where('uuid', $request->get('new'))
+                ->where(function ($query) {
+                    $query->where('users_id', auth()->id())
+                        ->orWhereNull('users_id');
+                })
+                ->with('products')
+                ->first();
+
+            $oldDish = Dish::query()
+                ->where('uuid', $foodMenuDishProduct->dish_id)
+                ->where(function ($query) {
+                    $query->where('users_id', auth()->id())
+                        ->orWhereNull('users_id');
+                })
+                ->with('products')
+                ->first();
 
             if ($dish) {
                 (new MenuServices())->productsBuyDelete($oldDish);
@@ -101,7 +120,14 @@ class MenuDishController extends Controller
             ], 403);
         }
 
-        $dish = Dish::query()->where('uuid', $request->get('new'))->with('products')->first();
+        $dish = Dish::query()
+            ->where('uuid', $request->get('new'))
+            ->where(function ($query) {
+                $query->where('users_id', auth()->id())
+                    ->orWhereNull('users_id');
+            })
+            ->with('products')
+            ->first();
 
         if (!$dish) {
             return response()->json([

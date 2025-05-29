@@ -26,7 +26,8 @@ class Dish extends UuidModel
         'portions',
         'cookingTime',
         'weight',
-        'timeText'
+        'timeText',
+        'users_id'
     ];
 
     public function category(): BelongsTo

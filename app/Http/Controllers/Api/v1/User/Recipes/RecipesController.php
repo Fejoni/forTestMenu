@@ -32,6 +32,10 @@ class RecipesController extends Controller
         foreach ($categories as $category) {
             $dishes = Dish::query()
                 ->where('category_id', $category->uuid)
+                ->where(function ($query) {
+                    $query->where('users_id', auth()->id())
+                        ->orWhereNull('users_id');
+                })
                 ->with(['products' => function($query) use ($productsID) {
                     $query->whereIn('products.uuid', $productsID);
                 }])
@@ -63,7 +67,14 @@ class RecipesController extends Controller
 
     public function products(): JsonResponse
     {
-        $products = Product::query()->select('name', 'image', 'uuid', 'categories_id')->with(['division'])->get();
+        $products = Product::query()
+            ->where(function ($query) {
+                $query->where('users_id', auth()->id())
+                    ->orWhereNull('users_id');
+            })
+            ->select('name', 'image', 'uuid', 'categories_id')
+            ->with(['division'])
+            ->get();
 
         $filterProducts = [];
 

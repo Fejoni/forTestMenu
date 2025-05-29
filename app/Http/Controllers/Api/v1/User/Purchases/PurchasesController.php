@@ -24,7 +24,14 @@ class PurchasesController extends Controller
 
     public function products(): JsonResponse
     {
-        $products = Product::query()->select('name', 'image', 'uuid', 'categories_id')->with(['division'])->get();
+        $products = Product::query()
+            ->where(function ($query) {
+                $query->where('users_id', auth()->id())
+                    ->orWhereNull('users_id');
+            })
+            ->select('name', 'image', 'uuid', 'categories_id')
+            ->with(['division'])
+            ->get();
 
         $filterProducts = [];
 
@@ -43,9 +50,11 @@ class PurchasesController extends Controller
             'product_id' => 'required|exists:products,uuid',
         ]);
 
-        UserProducts::query()->where([['users_id', auth()->id()], ['product_id', $request->get('product_id')]])->update([
-            'status' => true
-        ]);
+        UserProducts::query()
+            ->where([['users_id', auth()->id()], ['product_id', $request->get('product_id')]])
+            ->update([
+                'status' => true
+            ]);
 
         return response()->json([
             'message' => 'Продукт успешно обновлен'
@@ -58,7 +67,9 @@ class PurchasesController extends Controller
             'product_id' => 'required|exists:products,uuid',
         ]);
 
-        UserProducts::query()->where([['users_id', auth()->id()], ['product_id', $request->get('product_id')]])->delete();
+        UserProducts::query()
+            ->where([['users_id', auth()->id()], ['product_id', $request->get('product_id')]])
+            ->delete();
 
         return response()->json([
             'message' => 'Продукт успешно обновлен'
@@ -72,9 +83,11 @@ class PurchasesController extends Controller
             'quantity' => ['required', 'numeric', 'min:1'],
         ]);
 
-        UserProducts::query()->where([['users_id', auth()->id()], ['product_id', $request->get('product_id')]])->update([
-            'count' => $request->get('quantity')
-        ]);
+        UserProducts::query()
+            ->where([['users_id', auth()->id()], ['product_id', $request->get('product_id')]])
+            ->update([
+                'count' => $request->get('quantity')
+            ]);
 
         return response()->json([
             'message' => 'Количество продукта успешно изменено'
