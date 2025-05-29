@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\v1\User\Product;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\v1\User\UserProductStore;
+use App\Http\Requests\v1\User\UserProductStoreRequest;
 use App\Models\Product\Product;
 use App\Models\Product\ProductDivision;
 use App\Models\Product\ProductUnit;
@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function create(UserProductStore $request): JsonResponse
+    public function create(UserProductStoreRequest $request): JsonResponse
     {
         $userId = auth()->id();
 

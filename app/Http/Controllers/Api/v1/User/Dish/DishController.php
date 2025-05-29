@@ -3,8 +3,13 @@
 namespace App\Http\Controllers\Api\v1\User\Dish;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\v1\User\UserDishStoreRequest;
 use App\Http\Resources\Dish\DishTimeResource;
+use App\Models\Dish\Dish;
+use App\Models\Dish\DishCategory;
 use App\Models\Dish\DishTime;
+use App\Models\Product\Product;
+use App\Models\Product\ProductDivision;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -24,5 +29,52 @@ class DishController extends Controller
                 ->orWhere('name', 'Ужин')
                 ->get()
         );
+    }
+
+    public function create(UserDishStoreRequest $request)
+    {
+        $userId = auth()->id();
+
+        $isDishExists = Dish::query()
+            ->where('name', $request->get('name'))
+            ->where(function ($query) use ($userId) {
+                $query->where('users_id', $userId)
+                    ->orWhereNull('users_id');
+            })
+            ->exists();
+
+        if ($isDishExists) {
+            return response()->json([
+                'error' => 'Блюдо с таким именем уже существует.'
+            ], 403);
+        }
+
+        if (!DishTime::query()->where('uuid', $request->get('dish_time_id'))->exists()) {
+            return response()->json([
+                'error' => 'Время не найдено'
+            ], 403);
+        }
+
+        if (!DishCategory::query()->where('uuid', $request->get('dish_category_id'))->exists()) {
+            return response()->json([
+                'error' => 'Категория не найдена'
+            ], 403);
+        }
+
+        $dish = Dish::query()->create([
+            'users_id' => $userId,
+            'name' => $request->get('name'),
+            'recipe' => $request->get('receipt'),
+            'photo' => $request->get('image'),
+            'cookingTime' => $request->get('cooking_time'),
+            'category_id' => $request->get('dish_category_id'),
+            'is_premium' => false
+        ]);
+
+        $dish->times()->attach($request->get('dish_time_id'));
+
+        return response()->json([
+           'message' => 'Блюдо успешно создано'
+        ]);
     }
 }

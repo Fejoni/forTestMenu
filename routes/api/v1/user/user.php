@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\v1\Admin\Image\ImageUploadController;
 use App\Http\Controllers\Api\v1\User\Dish\DishController;
 use App\Http\Controllers\Api\v1\User\Product\ProductController;
 use App\Http\Controllers\Api\v1\User\Recipes\RecipesController;
@@ -31,6 +32,14 @@ Route::prefix('user')->group(function () {
 
         Route::prefix('products')->group(function () {
             Route::post('/create', [ProductController::class, 'create']);
+        });
+
+        Route::prefix('dish')->group(function () {
+            Route::post('/create', [DishController::class, 'create']);
+        });
+
+        Route::prefix('file')->group(function () {
+            Route::post('upload', [ImageUploadController::class, 'upload']);
         });
     });
 
