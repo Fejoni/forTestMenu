@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\v1\User\Dish\DishController;
+use App\Http\Controllers\Api\v1\User\Product\ProductController;
 use App\Http\Controllers\Api\v1\User\Recipes\RecipesController;
 use App\Http\Controllers\Api\v1\User\User\UserCheckoutController;
 use Illuminate\Support\Facades\Route;
@@ -29,7 +30,7 @@ Route::prefix('user')->group(function () {
         });
 
         Route::prefix('products')->group(function () {
-
+            Route::post('/create', [ProductController::class, 'create']);
         });
     });
 
