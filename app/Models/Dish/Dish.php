@@ -47,7 +47,7 @@ class Dish extends UuidModel
     {
         return $this
             ->belongsToMany(Product::class, 'dish_product', 'dish_id', 'product_id')
-            ->withPivot('quantity');
+            ->withPivot('quantity')->with(['unit', 'division']);
     }
 
     public function times(): BelongsToMany
