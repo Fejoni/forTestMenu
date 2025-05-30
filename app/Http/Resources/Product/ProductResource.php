@@ -30,7 +30,7 @@ class ProductResource extends JsonResource
             'unit' => UnitResource::make($this->whenLoaded('unit')),
             'category' => CategoryResource::make($this->whenLoaded('category')),
             'division' => DivisionResource::make($this->whenLoaded('division')),
-            'shops' => ShopResource::make($this->whenLoaded('shops')),
+            'shops' => ShopResource::collection($this->whenLoaded('shops')),
             'count' => $this->count,
             'protein' => $this->protein,
             'fat' => $this->fats,
