@@ -29,8 +29,8 @@ class PurchasesController extends Controller
                 $query->where('users_id', auth()->id())
                     ->orWhereNull('users_id');
             })
-            ->select('name', 'image', 'uuid', 'categories_id')
-            ->with(['division'])
+            ->select('name', 'image', 'uuid', 'divisions_id', 'unit_id')
+            ->with(['division', 'unit'])
             ->get();
 
         $filterProducts = [];
