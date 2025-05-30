@@ -66,6 +66,7 @@ class DishResource extends JsonResource
             }),
             'portions' => $this->portions,
             'cookingTime' => $this->cookingTime,
+            'timeText' => $this->timeText,
             'weight' => $this->weight,
         ];
     }
