@@ -16,7 +16,7 @@ class ProductController extends Controller
 {
     public function index(): AnonymousResourceCollection
     {
-        return ProductResource::collection(Product::query()->with('shops')->get());
+        return ProductResource::collection(Product::query()->with(['shops', 'division', 'unit', 'category'])->get());
     }
 
     public function delete(Request $request): JsonResponse
