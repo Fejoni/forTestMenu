@@ -72,7 +72,7 @@ class RecipesController extends Controller
                 $query->where('users_id', auth()->id())
                     ->orWhereNull('users_id');
             })
-            ->select('name', 'image', 'uuid', 'division_id', 'unit_id')
+            ->select('name', 'image', 'uuid', 'divisions_id', 'unit_id')
             ->with(['division', 'unit'])
             ->get();
 
