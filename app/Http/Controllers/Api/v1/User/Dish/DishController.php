@@ -37,10 +37,7 @@ class DishController extends Controller
 
         $isDishExists = Dish::query()
             ->where('name', $request->get('name'))
-            ->where(function ($query) use ($userId) {
-                $query->where('users_id', $userId)
-                    ->orWhereNull('users_id');
-            })
+            ->where('users_id', $userId)
             ->exists();
 
         if ($isDishExists) {
@@ -49,11 +46,12 @@ class DishController extends Controller
             ], 403);
         }
 
-        if (!DishTime::query()->where('uuid', $request->get('dish_time_id'))->exists()) {
-            return response()->json([
-                'error' => 'Время не найдено'
-            ], 403);
-        }
+//        if (!DishTime::query()->where('uuid', $request->get('dish_time_id'))->exists()) {
+//            return response()->json([
+//                'error' => 'Время не найдено'
+//            ], 403);
+//        }
+
 
         if (!DishCategory::query()->where('uuid', $request->get('dish_category_id'))->exists()) {
             return response()->json([
@@ -71,7 +69,18 @@ class DishController extends Controller
             'is_premium' => false
         ]);
 
-        $dish->times()->attach($request->get('dish_time_id'));
+//        $dish->times()->attach($request->get('dish_time_id'));
+
+        if (count($request->get('dish_time_ids'))) {
+            foreach ($request->get('dish_time_ids') as $time) {
+                $dish->times()->attach($time);
+            }
+        }
+
+        foreach ($request->get('products') as $product) {
+            $dish->products()->attach($product['product_id'], ['quantity' => $product['quantity']]);
+        }
+
 
         return response()->json([
             'message' => 'Блюдо успешно создано'
@@ -91,10 +100,16 @@ class DishController extends Controller
             ], 404);
         }
 
-        if (!DishTime::query()->where('uuid', $request->get('dish_time_id'))->exists()) {
-            return response()->json([
-                'error' => 'Время не найдено'
-            ], 403);
+//        if (!DishTime::query()->where('uuid', $request->get('dish_time_id'))->exists()) {
+//            return response()->json([
+//                'error' => 'Время не найдено'
+//            ], 403);
+//        }
+        $dish->times()->detach();
+        if (count($request->get('dish_time_ids'))) {
+            foreach ($request->get('dish_time_ids') as $time) {
+                $dish->times()->attach($time);
+            }
         }
 
         if (!DishCategory::query()->where('uuid', $request->get('dish_category_id'))->exists()) {
@@ -111,7 +126,7 @@ class DishController extends Controller
             'category_id' => $request->get('dish_category_id')
         ]);
 
-        $dish->times()->sync($request->get('dish_time_id'));
+//        $dish->times()->sync($request->get('dish_time_id'));
 
         return response()->json([
            'message' => 'Блюдо успешно изменено'
