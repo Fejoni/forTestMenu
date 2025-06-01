@@ -50,7 +50,7 @@ class MenuController extends Controller
                         if ($products) {
                             $dishesByDay[$dishQueryTime->name][] = [
                                 'data' => new DishResource(
-                                    Dish::query()->where('uuid', $products->dish_id)->first()
+                                    Dish::query()->where('uuid', $products->dish_id)->with('products')->first()
                                 ),
                                 'id' => $products->uuid
                             ];

@@ -54,8 +54,6 @@ class ImportDishes extends Command
             return 1;
         }
 
-
-
         foreach ($data as $item) {
             $this->info("Создаем блюдо: {$item['name']}");
             if (!Dish::query()->where('name', $item['name'])->exists()) {
@@ -109,6 +107,7 @@ class ImportDishes extends Command
                     if($quantity == 'null' OR $quantity == null){
                         $quantity = 1;
                     }
+
                     $dish->products()->syncWithoutDetaching([
                         $product->uuid => ['quantity' =>
                             $quantity ?? 1
