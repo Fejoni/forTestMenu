@@ -72,8 +72,9 @@ class ImportProduct extends Command
                         $unitData = [1, 'гр.'];
                     }
 
-                    $unit = ProductUnit::query()->firstOrCreate(['name' => $unitData[1] ?? 'гр.']);
 
+                    $unit = ProductUnit::query()->firstOrCreate(['name' => $unitData[1] ?? 'гр.']);
+                    $this->info('Ед. изм ' . $unit->name);
 
                     $product = Product::query()->firstOrCreate(
                         ['name' => $ingredient['product_name']],
@@ -96,7 +97,7 @@ class ImportProduct extends Command
                         DB::table('dish_product')->insert([
                             'dish_id' => $dish->uuid,
                             'product_id' => $product->uuid,
-                            'quantity' => $unitData[0] ?? 1
+                            'quantity' => $ingredient['weight'] ?? 1
                         ]);
                     } else {
                         $this->warn("⚠️ Запись уже существует для блюда: {$dish->name} и продукта: {$product->name}");
