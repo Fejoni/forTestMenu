@@ -2,17 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\GenerateImageFromTextJob;
 use App\Models\Dish\Dish;
 use App\Models\Dish\DishCategory;
 use App\Models\Dish\DishSuitable;
 use App\Models\Dish\DishTime;
-use App\Models\Dish\DishType;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCategory;
-use App\Models\Product\ProductDivision;
 use App\Models\Product\ProductUnit;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Storage;
 
 class ImportDishes extends Command
 {
@@ -115,39 +113,7 @@ class ImportDishes extends Command
                     ]);
                 }
 
-                $url = 'https://neuroimg.art/api/v1/generate';
-                $headers = ['Content-Type: application/json'];
-                $post_data = [
-                    "token" => "36327fcc-de17-4307-a3b1-0aef239f50c4",
-                    "model" => "HUBG_Flux.1丨BeautifulRealistic-Alpha",
-                    "prompt" => "Блюдо " . $item['name'] . " простое",
-                    "width" => 1024,
-                    "height" => 1024,
-                    "steps" => 30,
-                    "stream" => false
-                ];
-
-                $curl = curl_init();
-                curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-                curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
-                curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($post_data));
-                curl_setopt($curl, CURLOPT_URL, $url);
-                curl_setopt($curl, CURLOPT_POST, true);
-
-                $result = json_decode(curl_exec($curl), true);
-                curl_close($curl);
-
-                if (isset($result['status']) && $result['status'] === 'SUCCESS') {
-                    $imageUrl = $result['image_url'];
-                    $imageContents = file_get_contents($imageUrl);
-
-                    if ($imageContents) {
-                        $fileName = 'dishes/' . uniqid() . '.jpg';
-                        Storage::disk('public')->put($fileName, $imageContents);
-                        $dish->photo = url(Storage::url($fileName));
-                        $dish->save();
-                    }
-                }
+                GenerateImageFromTextJob::dispatch($dish);
 
                 $this->info("✅ Добавлено блюдо: {$dish->name}");
             } else {
