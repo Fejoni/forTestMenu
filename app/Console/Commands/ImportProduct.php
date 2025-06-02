@@ -67,14 +67,14 @@ class ImportProduct extends Command
                 foreach ($item['table']['products'] as $ingredient) {
                     $this->info('Продукт: ' . $ingredient['product_name']);
 
-                    $unitData = explode($ingredient['measure'], ' ');
-                    if(count($unitData) < 1 AND ($unitData[1] == '' OR !$unitData[1])){
-                        $unitData = [1, 'гр.'];
+                    $unitName = preg_replace('/[^0-9\s]/', '', $ingredient['measure']);
+                    if($unitName == '' OR !$unitName){
+                        $unitName = 'гр.';
                     }
 
 
-                    $unit = ProductUnit::query()->firstOrCreate(['name' => $unitData[1] ?? 'гр.']);
-                    $this->info('Ед. изм ' . $unit->name);
+                    $unit = ProductUnit::query()->firstOrCreate(['name' => $unitName ?? 'гр.']);
+                    $this->info('Ед. изм ' . $unitName);
 
                     $product = Product::query()->firstOrCreate(
                         ['name' => $ingredient['product_name']],
