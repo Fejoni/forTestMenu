@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\v1\Admin\Dish\DishCategoryController;
 use App\Http\Controllers\Api\v1\Admin\Dish\DishTimeController;
 use App\Http\Controllers\Api\v1\Admin\Image\ImageUploadController;
 use App\Http\Controllers\Api\v1\Admin\Product\Category\CategoryController;
@@ -26,7 +27,7 @@ Route::prefix('user')->group(function () {
                 Route::get('/', [DishController::class, 'time']);
                 Route::get('/default', [DishController::class, 'timeDefaultSelect']);
             });
-            Route::get('/categories', [\App\Models\Dish\DishCategory::class, 'index']);
+            Route::get('/categories', [DishCategoryController::class, 'index']);
         });
 
         Route::prefix('recipes')->group(function () {
