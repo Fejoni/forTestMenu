@@ -31,6 +31,14 @@ use App\Http\Resources\Product\ProductResource;
 
 class DishResource extends JsonResource
 {
+    protected static bool $withoutProducts = false;
+
+    public static function withoutProducts(): self
+    {
+        static::$withoutProducts = true;
+        return new static(null);
+    }
+
     /**
      * Transform the resource into an array.
      *
@@ -58,7 +66,7 @@ class DishResource extends JsonResource
             }),
 
             'type' => new DishTypeResource(DishType::query()->where('uuid', $this->type_id)->first()),
-            'products' => $this->products->map(function (Product $product) {
+            'products' => self::$withoutProducts ? [] : $this->products->map(function (Product $product) {
                 return [
                     'product' => new ProductResource($product),
                     'quantity' => $product->pivot->quantity,

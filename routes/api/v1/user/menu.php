@@ -17,5 +17,6 @@ Route::prefix('menu')->group(function () {
         Route::delete('/delete', [MenuDishController::class, 'delete']);
         Route::post('/replacement', [MenuDishController::class, 'replacement']);
         Route::post('/append', [MenuDishController::class, 'append']);
+        Route::get('/{uuid}', [MenuDishController::class, 'show']);
     });
 });

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1\User\Menu;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\v1\User\Menu\ShowMenuDishRequest;
 use App\Http\Resources\Dish\DishResource;
 use App\Models\Dish\Dish;
 use App\Models\Dish\DishCategory;
@@ -15,13 +16,13 @@ use Illuminate\Http\Request;
 
 class MenuDishController extends Controller
 {
-    public function index(): JsonResponse
+    public function index()
     {
         $categories = DishCategory::query()->get();
         $dish = [];
 
         foreach ($categories as $category) {
-            $dish[$category->name] = DishResource::collection(
+            $dish[$category->name] = DishResource::withoutProducts()->collection(
                 Dish::query()
                     ->where('category_id', $category->uuid)
                     ->where(function ($query) {
@@ -34,6 +35,18 @@ class MenuDishController extends Controller
 
         return response()->json($dish);
     }
+
+    public function show(ShowMenuDishRequest $request): DishResource
+    {
+        $dish = Dish::query()
+            ->where('uuid', $request->uuid)
+            ->where(function ($query) {
+            $query->where('users_id', auth()->id())
+                ->orWhereNull('users_id');
+        })->first();
+        return DishResource::make($dish);
+    }
+
     public function delete(Request $request): JsonResponse
     {
         $foodMenuDishProduct = FoodMenuDishProduct::query()->where([['uuid', $request->get('id')]])->first();
