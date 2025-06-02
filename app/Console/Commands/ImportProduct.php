@@ -66,8 +66,8 @@ class ImportProduct extends Command
             if ($dish) {
                 foreach ($item['table']['products'] as $ingredient) {
                     $this->info('Продукт: ' . $ingredient['product_name']);
-
-                    $unitName = preg_replace('/[^0-9\s]/', '', $ingredient['measure']);
+                    $unitName = mb_eregi_replace('[0-9]', '', $ingredient['measure']);
+                    $unitName = mb_eregi_replace('[\s]', '', $unitName);
                     if($unitName == '' OR !$unitName){
                         $unitName = 'гр.';
                     }
