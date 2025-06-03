@@ -36,6 +36,7 @@ Route::prefix('user')->group(function () {
         });
 
         Route::prefix('products')->group(function () {
+            Route::get('/list', [ProductController::class, 'list']);
             Route::post('/create', [ProductController::class, 'create']);
             Route::post('/update', [ProductController::class, 'update']);
             Route::delete('/delete', [ProductController::class, 'delete']);

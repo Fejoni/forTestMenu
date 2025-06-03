@@ -12,6 +12,22 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
+    public function list()
+    {
+        $products = Product::query()->where('users_id', auth()->id())
+            ->select('name', 'image', 'uuid', 'divisions_id', 'unit_id')
+            ->with(['division', 'unit', 'category'])
+            ->get();
+
+        $filterProducts = [];
+
+        foreach ($products as $product) {
+            $filterProducts[$product->division?->name ?? ''][] = $product->toArray();
+        }
+
+        return response()->json($filterProducts);
+    }
+
     public function create(UserProductCreateRequest $request): JsonResponse
     {
         $userId = auth()->id();
@@ -46,7 +62,7 @@ class ProductController extends Controller
             'name' => $request->get('name'),
             'users_id' => $userId,
             'categories_id' => $request->get('category_id'),
-            'division_id' => $request->get('division_id'),
+            'divisions_id' => $request->get('division_id'),
             'count' => $request->get('quantity'),
         ]);
 
@@ -84,7 +100,7 @@ class ProductController extends Controller
         $product->update([
             'name' => $request->get('name'),
             'categories_id' => $request->get('category_id'),
-            'division_id' => $request->get('division_id'),
+            'divisions_id' => $request->get('division_id'),
             'count' => $request->get('quantity')
         ]);
 
