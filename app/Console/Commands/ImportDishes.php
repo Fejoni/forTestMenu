@@ -11,6 +11,7 @@ use App\Models\Product\Product;
 use App\Models\Product\ProductCategory;
 use App\Models\Product\ProductUnit;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 
 class ImportDishes extends Command
 {
@@ -120,6 +121,9 @@ class ImportDishes extends Command
                 $this->warn("⚠️ Блюдо уже существует: {$item['name']}");
             }
         }
+
+        Artisan::call('products:generate-images');
+        $this->info('🎯 Запущена генерация изображений для продуктов без изображения.');
 
         return 0;
     }

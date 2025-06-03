@@ -3,16 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Models\Dish\Dish;
-use App\Models\Dish\DishCategory;
-use App\Models\Dish\DishSuitable;
-use App\Models\Dish\DishTime;
-use App\Models\FoodMenuDishProduct;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCategory;
 use App\Models\Product\ProductUnit;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class ImportProduct extends Command
 {
@@ -109,6 +105,9 @@ class ImportProduct extends Command
                 $this->warn("⚠️ Блюдо уже существует: {$item['name']}");
             }
         }
+
+        Artisan::call('products:generate-images');
+        $this->info('🎯 Запущена генерация изображений для продуктов без изображения.');
 
         return 0;
     }
