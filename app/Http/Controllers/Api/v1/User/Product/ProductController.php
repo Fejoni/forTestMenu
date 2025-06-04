@@ -15,7 +15,7 @@ class ProductController extends Controller
     public function list()
     {
         $products = Product::query()->where('users_id', auth()->id())
-            ->select('name', 'image', 'uuid', 'divisions_id', 'unit_id')
+            ->select('name', 'image', 'uuid', 'divisions_id', 'unit_id', 'categories_id', 'count')
             ->with(['division', 'unit', 'category'])
             ->get();
 
@@ -61,9 +61,9 @@ class ProductController extends Controller
         Product::query()->create([
             'name' => $request->get('name'),
             'users_id' => $userId,
-            'categories_id' => $request->get('category_id'),
-            'divisions_id' => $request->get('division_id'),
-            'count' => $request->get('quantity'),
+            'categories_id' => $request->get('categories_id'),
+            'divisions_id' => $request->get('divisions_id'),
+            'count' => $request->get('count'),
         ]);
 
         return response()->json([
@@ -99,9 +99,9 @@ class ProductController extends Controller
 
         $product->update([
             'name' => $request->get('name'),
-            'categories_id' => $request->get('category_id'),
-            'divisions_id' => $request->get('division_id'),
-            'count' => $request->get('quantity')
+            'categories_id' => $request->get('categories_id'),
+            'divisions_id' => $request->get('divisions_id'),
+            'count' => $request->get('count'),
         ]);
 
         return response()->json([
