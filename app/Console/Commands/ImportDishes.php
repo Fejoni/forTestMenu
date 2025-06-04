@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Jobs\GenerateImageFromTextJob;
+use App\Jobs\GenerateRecipeTextJob;
 use App\Models\Dish\Dish;
 use App\Models\Dish\DishCategory;
 use App\Models\Dish\DishSuitable;
@@ -22,14 +23,14 @@ class ImportDishes extends Command
     {
         $min = -3;
         $max = 4;
-        return $val+($min + ($max - $min) * (mt_rand() / mt_getrandmax()));
+        return $val + ($min + ($max - $min) * (mt_rand() / mt_getrandmax()));
     }
 
     public function handle(): int
     {
         $filePath = $this->argument('file') ?? $this->ask('Введите путь к JSON-файлу (например: public/data.json)');
 
-        $productCategory = ProductCategory::query()->where('name',  'Другое')->first();
+        $productCategory = ProductCategory::query()->where('name', 'Другое')->first();
 
 
         if (!file_exists($filePath)) {
@@ -58,7 +59,7 @@ class ImportDishes extends Command
             if (!Dish::query()->where('name', $item['name'])->exists()) {
 
                 $weight = 100;
-                if(isset($item['table']) AND isset($item['table']['total']) AND isset($item['table']['total']['weight'])){
+                if (isset($item['table']) AND isset($item['table']['total']) AND isset($item['table']['total']['weight'])) {
                     $weight = $item['table']['total']['weight'];
                 }
 
@@ -69,24 +70,24 @@ class ImportDishes extends Command
                 $dish->carbohydrates = number_format($this->rand($item['carbs']), 1);
                 $dish->fats = number_format($this->rand($item['fats']), 1);
                 $dish->is_premium = 0;
-                $dish->recipe = $item['recipe_no_tags'];
+                $dish->recipe = null;
                 $dish->portions = $item['recipes_portions'];
                 $dish->timeText = $item['time'];
-                $dish->weight = rand(-30, 30)+$weight;
+                $dish->weight = rand(-30, 30) + $weight;
                 $dish->save();
+
+                GenerateRecipeTextJob::dispatch($dish, $item['recipe_no_tags']);
 
                 foreach ($item['type'] as $type) {
                     $time = DishTime::query()->where('name', $type)->first();
-                    if($time){
+                    if ($time) {
                         $dish->times()->attach($time->uuid);
-                    }
-                    else{
+                    } else {
                         $catDish = DishCategory::query()->where('name', $type)->first();
-                        if($catDish){
+                        if ($catDish) {
                             $dish->category_id = $catDish->uuid;
                             $dish->save();
-                        }
-                        else{
+                        } else {
                             $suitable = DishSuitable::query()->firstOrCreate(['name' => $type]);
                             $dish->suitables()->attach($suitable);
                         }
@@ -102,8 +103,8 @@ class ImportDishes extends Command
                         ['categories_id', $productCategory->uuid]
                     );
 
-                    $quantity =  str_replace(',', '.', $ingredient['count']);
-                    if($quantity == 'null' OR $quantity == null){
+                    $quantity = str_replace(',', '.', $ingredient['count']);
+                    if ($quantity == 'null' OR $quantity == null) {
                         $quantity = 1;
                     }
 
