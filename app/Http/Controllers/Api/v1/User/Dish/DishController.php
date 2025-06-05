@@ -31,6 +31,16 @@ class DishController extends Controller
         );
     }
 
+    public function list()
+    {
+        $dish = Dish::query()->where('users_id', auth()->id())
+            ->with(['category', 'times'])
+            ->get();
+
+
+        return response()->json($dish);
+    }
+
     public function create(UserDishCreateRequest $request): JsonResponse
     {
         $userId = auth()->id();
@@ -53,7 +63,7 @@ class DishController extends Controller
 //        }
 
 
-        if (!DishCategory::query()->where('uuid', $request->get('dish_category_id'))->exists()) {
+        if (!DishCategory::query()->where('uuid', $request->get('category_id'))->exists()) {
             return response()->json([
                 'error' => 'Категория не найдена'
             ], 403);
@@ -63,9 +73,9 @@ class DishController extends Controller
             'users_id' => $userId,
             'name' => $request->get('name'),
             'recipe' => $request->get('receipt'),
-            'photo' => $request->get('image'),
-            'cookingTime' => $request->get('cooking_time'),
-            'category_id' => $request->get('dish_category_id'),
+            'photo'=> 'https://api.youamm.ru/images/nophoto.jpg',
+            'cookingTime' => $request->get('cookingTime'),
+            'category_id' => $request->get('category_id'),
             'is_premium' => false
         ]);
 
@@ -112,7 +122,7 @@ class DishController extends Controller
             }
         }
 
-        if (!DishCategory::query()->where('uuid', $request->get('dish_category_id'))->exists()) {
+        if (!DishCategory::query()->where('uuid', $request->get('category_id'))->exists()) {
             return response()->json([
                 'error' => 'Категория не найдена'
             ], 403);
@@ -120,10 +130,9 @@ class DishController extends Controller
 
         $dish->update([
             'name' => $request->get('name'),
-            'recipe' => $request->get('receipt'),
-            'photo' => $request->get('image'),
-            'cookingTime' => $request->get('cooking_time'),
-            'category_id' => $request->get('dish_category_id')
+            'recipe' => $request->get('recipe'),
+            'cookingTime' => $request->get('cookingTime'),
+            'category_id' => $request->get('category_id')
         ]);
 
 //        $dish->times()->sync($request->get('dish_time_id'));

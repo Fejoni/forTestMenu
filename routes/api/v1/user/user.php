@@ -45,6 +45,7 @@ Route::prefix('user')->group(function () {
         });
 
         Route::prefix('dish')->group(function () {
+            Route::get('/list', [DishController::class, 'list']);
             Route::post('/create', [DishController::class, 'create']);
             Route::post('/update', [DishController::class, 'update']);
             Route::delete('/delete', [DishController::class, 'delete']);

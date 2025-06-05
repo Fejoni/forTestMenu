@@ -10,11 +10,11 @@ class UserDishCreateRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'receipt' => ['required'],
-            'image' => ['required'],
-            'dish_time_id' => ['required'],
-            'cooking_time' => ['required'],
-            'dish_category_id' => ['required'],
+            'recipe' => ['required'],
+            'image' => ['nullable'],
+            'dish_time_ids' => ['required'],
+            'cookingTime' => ['required'],
+            'category_id' => ['required'],
         ];
     }
 }
