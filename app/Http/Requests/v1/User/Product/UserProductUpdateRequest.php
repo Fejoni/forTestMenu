@@ -10,9 +10,9 @@ class UserProductUpdateRequest extends FormRequest
     {
         return [
             'name' => ['required'],
-            'division_id' => ['required'],
-            'category_id' => ['required'],
-            'quantity' => ['required'],
+            'divisions_id' => ['required'],
+            'categories_id' => ['required'],
+            'count' => ['nullable'],
             'id' => ['required']
         ];
     }
