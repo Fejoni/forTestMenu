@@ -60,6 +60,7 @@ class ProductController extends Controller
 
         Product::query()->create([
             'name' => $request->get('name'),
+            'unit_id' => $request->get('unit_id'),
             'users_id' => $userId,
             'categories_id' => $request->get('categories_id'),
             'divisions_id' => $request->get('divisions_id'),
@@ -101,6 +102,7 @@ class ProductController extends Controller
             'name' => $request->get('name'),
             'categories_id' => $request->get('categories_id'),
             'divisions_id' => $request->get('divisions_id'),
+            'unit_id' => $request->get('unit_id'),
             'count' => $request->get('count'),
         ]);
 

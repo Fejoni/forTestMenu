@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\v1\Admin\Dish\DishTimeController;
 use App\Http\Controllers\Api\v1\Admin\Image\ImageUploadController;
 use App\Http\Controllers\Api\v1\Admin\Product\Category\CategoryController;
 use App\Http\Controllers\Api\v1\Admin\Product\Division\DivisionController;
+use App\Http\Controllers\Api\v1\Admin\Product\Unit\UnitController;
 use App\Http\Controllers\Api\v1\User\Dish\DishController;
 use App\Http\Controllers\Api\v1\User\Product\ProductController;
 use App\Http\Controllers\Api\v1\User\Recipes\RecipesController;
@@ -37,6 +38,7 @@ Route::prefix('user')->group(function () {
 
         Route::prefix('products')->group(function () {
             Route::get('/list', [ProductController::class, 'list']);
+            Route::get('/unit', [UnitController::class, 'index']);
             Route::post('/create', [ProductController::class, 'create']);
             Route::post('/update', [ProductController::class, 'update']);
             Route::delete('/delete', [ProductController::class, 'delete']);

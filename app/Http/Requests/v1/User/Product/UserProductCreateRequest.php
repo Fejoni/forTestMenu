@@ -12,6 +12,7 @@ class UserProductCreateRequest extends FormRequest
             'name' => ['required'],
             'divisions_id' => ['required'],
             'categories_id' => ['required'],
+            'unit_id' => ['required'],
             'count' => ['nullable'],
         ];
     }
