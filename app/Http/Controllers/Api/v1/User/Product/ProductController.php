@@ -46,13 +46,13 @@ class ProductController extends Controller
             ], 403);
         }
 
-        if (!ProductDivision::query()->where('uuid', $request->get('division_id'))->exists()) {
+        if (!ProductDivision::query()->where('uuid', $request->get('divisions_id'))->exists()) {
             return response()->json([
                 'error' => 'Неверный отдел.'
             ], 403);
         }
 
-        if (!Product::query()->where('categories_id', $request->get('category_id'))->exists()) {
+        if (!Product::query()->where('categories_id', $request->get('categories_id'))->exists()) {
             return response()->json([
                 'error' => 'Неверная категория.'
             ], 403);
@@ -85,13 +85,13 @@ class ProductController extends Controller
             ], 404);
         }
 
-        if (!ProductDivision::query()->where('uuid', $request->get('division_id'))->exists()) {
+        if (!ProductDivision::query()->where('uuid', $request->get('divisions_id'))->exists()) {
             return response()->json([
                 'error' => 'Неверный отдел.'
             ], 403);
         }
 
-        if (!Product::query()->where('categories_id', $request->get('category_id'))->exists()) {
+        if (!Product::query()->where('categories_id', $request->get('categories_id'))->exists()) {
             return response()->json([
                 'error' => 'Неверная категория.'
             ], 403);
