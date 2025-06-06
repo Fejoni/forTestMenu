@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\Dish\DishResource;
 use App\Models\Dish\Dish;
 use App\Models\Dish\DishTime;
+use App\Models\DishLeftovers;
 use App\Models\Telegram\FoodMenu;
 use App\Models\User\UserProducts;
 use App\Services\Menu\MenuServices;
@@ -86,6 +87,7 @@ class MenuController extends Controller
         if (FoodMenu::query()->where('users_id', auth()->user()->id)->exists()) {
             FoodMenu::query()->where('users_id', auth()->user()->id)->delete();
             UserProducts::query()->where('users_id', auth()->user()->id)->delete();
+            DishLeftovers::query()->where('user_id', auth()->user()->id)->delete();
         }
 
         (new MenuServices())->generate();

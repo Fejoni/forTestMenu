@@ -8,6 +8,7 @@ class FoodMenuDishProduct extends UuidModel
 
     protected $fillable = [
         'food_menus_id',
-        'dish_id'
+        'dish_id',
+        'portions'
     ];
 }
