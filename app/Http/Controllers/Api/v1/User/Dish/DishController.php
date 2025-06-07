@@ -34,7 +34,7 @@ class DishController extends Controller
     public function list()
     {
         $dish = Dish::query()->where('users_id', auth()->id())
-            ->with(['category', 'times'])
+            ->with(['category', 'times', 'products'])
             ->get();
 
 
@@ -72,7 +72,7 @@ class DishController extends Controller
         $dish = Dish::query()->create([
             'users_id' => $userId,
             'name' => $request->get('name'),
-            'recipe' => $request->get('receipt'),
+            'recipe' => $request->get('recipe'),
             'photo'=> 'https://api.youamm.ru/images/nophoto.jpg',
             'cookingTime' => $request->get('cookingTime'),
             'category_id' => $request->get('category_id'),
