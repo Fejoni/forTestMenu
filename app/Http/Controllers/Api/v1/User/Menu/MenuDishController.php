@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1\User\Menu;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\v1\User\Menu\IndexMenuDishRequest;
 use App\Http\Requests\v1\User\Menu\ShowMenuDishRequest;
 use App\Http\Resources\Dish\DishResource;
 use App\Models\Dish\Dish;
@@ -16,20 +17,38 @@ use Illuminate\Http\Request;
 
 class MenuDishController extends Controller
 {
-    public function index()
+    public function index(IndexMenuDishRequest $request)
     {
         $categories = DishCategory::query()->get();
         $dish = [];
 
         foreach ($categories as $category) {
             $dish[$category->name] = DishResource::withoutProducts()->collection(
-                Dish::query()
-                    ->where('category_id', $category->uuid)
-                    ->where(function ($query) {
-                        $query->where('users_id', auth()->id())
-                            ->orWhereNull('users_id');
+                Dish::query()->where(function ($query) {
+                    $query->where('users_id', auth()->id())
+                        ->orWhereNull('users_id');
+                })
+                    ->when($request->filled('name'), function ($query) use ($request) {
+                        $name = trim($request->input('name'));
+                        $query->where('name', 'LIKE', "%{$name}%");
                     })
-                    ->get()
+                    ->when($request->filled('dish_time_ids'), function ($query) use ($request) {
+                        $query->whereHas('times', function ($query) use ($request) {
+                            $query->whereIn('uuid', $request->input('dish_time_ids'));
+                        });
+                    })
+                    ->when($request->filled('category_ids'), function ($query) use ($request) {
+                        $query->whereIn('category_id', $request->input('category_ids'));
+                    })
+                    ->when($request->filled('type_ids'), function ($query) use ($request) {
+                        $query->whereIn('type_id', $request->input('type_ids'));
+                    })
+                    ->when($request->filled('dish_suitable_ids'), function ($query) use ($request) {
+                        $query->whereHas('suitables', function ($query) use ($request) {
+                            $query->whereIn('uuid', $request->input('dish_suitable_ids'));
+                        });
+                    })
+                    ->paginate($request->filled('per_page') ? (int)$request->input('per_page') : 5)
             );
         }
 
@@ -41,9 +60,9 @@ class MenuDishController extends Controller
         $dish = Dish::query()
             ->where('uuid', $request->uuid)
             ->where(function ($query) {
-            $query->where('users_id', auth()->id())
-                ->orWhereNull('users_id');
-        })->first();
+                $query->where('users_id', auth()->id())
+                    ->orWhereNull('users_id');
+            })->first();
         return DishResource::make($dish);
     }
 
@@ -66,6 +85,7 @@ class MenuDishController extends Controller
             'message' => 'Не найдено',
         ], 403);
     }
+
     public function replacement(Request $request): JsonResponse
     {
         $foodMenuDishProduct = FoodMenuDishProduct::query()->where([
