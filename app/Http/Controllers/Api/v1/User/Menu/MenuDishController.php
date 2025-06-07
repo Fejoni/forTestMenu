@@ -19,41 +19,63 @@ class MenuDishController extends Controller
 {
     public function index(IndexMenuDishRequest $request)
     {
-        $categories = DishCategory::query()->get();
+        $categories = DishCategory::all();
+        $perPage = $request->integer('per_page', 5);
+        $page = $request->integer('page', 1);
+
         $dish = [];
+        $hasMore = false;
 
         foreach ($categories as $category) {
-            $dish[$category->name] = DishResource::withoutProducts()->collection(
-                Dish::query()->where(function ($query) {
-                    $query->where('users_id', auth()->id())
-                        ->orWhereNull('users_id');
+            $query = Dish::query()->where(function ($query) {
+                $query->where('users_id', auth()->id())
+                    ->orWhereNull('users_id');
+            })
+                ->when($request->filled('name'), function ($query) use ($request) {
+                    $name = trim($request->input('name'));
+                    $query->where('name', 'LIKE', "%{$name}%");
                 })
-                    ->when($request->filled('name'), function ($query) use ($request) {
-                        $name = trim($request->input('name'));
-                        $query->where('name', 'LIKE', "%{$name}%");
-                    })
-                    ->when($request->filled('dish_time_ids'), function ($query) use ($request) {
-                        $query->whereHas('times', function ($query) use ($request) {
-                            $query->whereIn('uuid', $request->input('dish_time_ids'));
-                        });
-                    })
-                    ->when($request->filled('category_ids'), function ($query) use ($request) {
-                        $query->whereIn('category_id', $request->input('category_ids'));
-                    })
-                    ->when($request->filled('type_ids'), function ($query) use ($request) {
-                        $query->whereIn('type_id', $request->input('type_ids'));
-                    })
-                    ->when($request->filled('dish_suitable_ids'), function ($query) use ($request) {
-                        $query->whereHas('suitables', function ($query) use ($request) {
-                            $query->whereIn('uuid', $request->input('dish_suitable_ids'));
-                        });
-                    })
-                    ->paginate($request->filled('per_page') ? (int)$request->input('per_page') : 5)
-            );
+                ->when($request->filled('dish_time_ids'), function ($query) use ($request) {
+                    $query->whereHas('times', function ($query) use ($request) {
+                        $query->whereIn('uuid', $request->input('dish_time_ids'));
+                    });
+                })
+                ->when($request->filled('category_ids'), function ($query) use ($request) {
+                    $query->whereIn('category_id', $request->input('category_ids'));
+                })
+                ->when($request->filled('type_ids'), function ($query) use ($request) {
+                    $query->whereIn('type_id', $request->input('type_ids'));
+                })
+                ->when($request->filled('dish_suitable_ids'), function ($query) use ($request) {
+                    $query->whereHas('suitables', function ($query) use ($request) {
+                        $query->whereIn('uuid', $request->input('dish_suitable_ids'));
+                    });
+                });
+
+            $totalForCategory = (clone $query)->count();
+            $items = $query->skip(($page - 1) * $perPage)
+                ->take($perPage)
+                ->get();
+
+            $hasMore = $hasMore || ($totalForCategory > $page * $perPage);
+
+            $dish[] = [
+                'category' => $category->name,
+                'dishes' => DishResource::withoutProducts()->collection($items),
+            ];
         }
 
-        return response()->json($dish);
+        return response()->json([
+            'data' => $dish,
+            'meta' => [
+                'current_page' => $page,
+                'per_page' => $perPage,
+                'next_page' => $hasMore ? $page + 1 : null,
+                'has_more' => $hasMore,
+            ]
+        ]);
     }
+
 
     public function show(ShowMenuDishRequest $request): DishResource
     {
@@ -137,6 +159,7 @@ class MenuDishController extends Controller
         ], 403);
     }
 
+    // Сюда добавить поле portions с кол-во порций и добавлять его в FoodMenuDishProduct
     public function append(Request $request): JsonResponse
     {
         $request->validate([
