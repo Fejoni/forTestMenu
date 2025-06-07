@@ -3,14 +3,13 @@
 namespace App\Http\Controllers\Api\v1\User\Recipes;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\v1\User\GetAvailableProductsGroupedByDivisionRequest;
 use App\Http\Resources\Dish\DishResource;
 use App\Models\Dish\Dish;
 use App\Models\Dish\DishCategory;
-use App\Models\Product\Product;
-use App\Models\User\UserProducts;
+use App\Services\Product\ProductServices;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class RecipesController extends Controller
 {
@@ -65,23 +64,12 @@ class RecipesController extends Controller
         return response()->json($filteredDishes);
     }
 
-    public function products(): JsonResponse
+    public function products(
+        GetAvailableProductsGroupedByDivisionRequest $request,
+        ProductServices $productServices
+    ): JsonResponse
     {
-        $products = Product::query()
-            ->where(function ($query) {
-                $query->where('users_id', auth()->id())
-                    ->orWhereNull('users_id');
-            })
-            ->select('name', 'image', 'uuid', 'divisions_id', 'unit_id')
-            ->with(['division', 'unit'])
-            ->get();
-
-        $filterProducts = [];
-
-        foreach ($products as $product) {
-                $filterProducts[$product->division?->name ?? ''][] = $product->toArray();
-        }
-
-        return response()->json($filterProducts);
+        $result = $productServices->getAvailableProductsGroupedByDivision($request);
+        return  response()->json($result);
     }
 }
