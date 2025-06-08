@@ -31,7 +31,7 @@ class MenuServices
         foreach ($period as $date) {
             $dates[] = mb_strtolower($date->isoFormat('dd DD.MM'));
         }
-        dd($dates);
+
         return $dates;
     }
 
