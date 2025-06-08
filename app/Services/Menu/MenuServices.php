@@ -25,6 +25,7 @@ class MenuServices
         $startOfWeek = Carbon::now()->startOfWeek();
         $period = CarbonPeriod::create($startOfWeek, Carbon::now()->endOfWeek());
 
+        dd($period);
         $dates = [];
 
         foreach ($period as $date) {
