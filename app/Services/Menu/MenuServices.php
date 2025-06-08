@@ -136,7 +136,7 @@ class MenuServices
                     FoodMenuDishProduct::create([
                         'food_menus_id' => $foodMenu->uuid,
                         'dish_id' => $item['dish']->uuid,
-                        'portions' => $item['portions'],
+                        'portions' => $item['portions'] ?? 1,
                     ]);
                 }
             }
