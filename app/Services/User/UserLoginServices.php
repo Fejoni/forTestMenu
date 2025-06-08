@@ -3,8 +3,10 @@
 namespace App\Services\User;
 
 use App\Http\Resources\User\UserResource;
+use App\Mail\UserRegisteredMail;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\ValidationException;
 
 class UserLoginServices
@@ -46,6 +48,8 @@ class UserLoginServices
             'password' =>  Hash::make($password),
             'name' => $name,
         ]);
+
+        Mail::to($user->email)->send(new UserRegisteredMail($user->email));
 
         return [
             'token' => $user->createToken('authToken')->plainTextToken,

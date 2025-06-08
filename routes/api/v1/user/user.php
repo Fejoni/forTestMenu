@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::prefix('user')->group(function () {
     Route::post('login', [UserCheckoutController::class, 'login']);
     Route::post('register', [UserCheckoutController::class, 'register']);
+    Route::post('forgot-password', [UserCheckoutController::class, 'forgotPassword']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('checkout', [UserCheckoutController::class, 'checkout']);
