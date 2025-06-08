@@ -134,6 +134,10 @@ class DishController extends Controller
             'cookingTime' => $request->get('cookingTime'),
             'category_id' => $request->get('category_id')
         ]);
+        $dish->products()->detach();
+        foreach ($request->get('products') as $product) {
+            $dish->products()->attach($product['product_id'], ['quantity' => $product['quantity']]);
+        }
 
 //        $dish->times()->sync($request->get('dish_time_id'));
 
