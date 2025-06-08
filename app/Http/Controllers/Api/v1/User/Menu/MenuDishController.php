@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1\User\Menu;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\v1\User\Menu\AppendMenuDishRequest;
 use App\Http\Requests\v1\User\Menu\IndexMenuDishRequest;
 use App\Http\Requests\v1\User\Menu\ShowMenuDishRequest;
 use App\Http\Resources\Dish\DishResource;
@@ -159,15 +160,8 @@ class MenuDishController extends Controller
         ], 403);
     }
 
-    // Сюда добавить поле portions с кол-во порций и добавлять его в FoodMenuDishProduct
-    public function append(Request $request): JsonResponse
+    public function append(AppendMenuDishRequest $request): JsonResponse
     {
-        $request->validate([
-            'new' => ['required'],
-            'time' => ['required'],
-            'day' => ['required'],
-        ]);
-
         $dishTime = DishTime::query()->where('name', $request->get('time'))->first();
 
         if (!$dishTime) {
@@ -200,6 +194,7 @@ class MenuDishController extends Controller
         FoodMenuDishProduct::query()->create([
             'food_menus_id' => $foodMenu->uuid,
             'dish_id' => $dish->uuid,
+            'portions' => $request->integer('portions', 1)
         ]);
 
         (new MenuServices())->productsBuy($dish);
