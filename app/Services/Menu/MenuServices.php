@@ -25,13 +25,13 @@ class MenuServices
         $startOfWeek = Carbon::now()->startOfWeek();
         $period = CarbonPeriod::create($startOfWeek, Carbon::now()->endOfWeek());
 
-        dd($period);
+
         $dates = [];
 
         foreach ($period as $date) {
             $dates[] = mb_strtolower($date->isoFormat('dd DD.MM'));
         }
-
+        dd($dates);
         return $dates;
     }
 
