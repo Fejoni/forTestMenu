@@ -94,26 +94,69 @@ class ImportDishes extends Command
                     }
                 }
 
-                foreach ($item['ingredients'] as $ingredient) {
-                    $unit = ProductUnit::query()->firstOrCreate(['name' => $ingredient['unit']]);
+                if(count($item['ingredients']) > 0){
+                    foreach ($item['ingredients'] as $ingredient) {
+                        $unit = ProductUnit::query()->firstOrCreate(['name' => $ingredient['unit']]);
 
-                    $product = Product::query()->firstOrCreate(
-                        ['name' => $ingredient['name']],
-                        ['unit_id' => $unit->uuid],
-                        ['categories_id', $productCategory->uuid]
-                    );
+                        $product = Product::query()->firstOrCreate(
+                            ['name' => $ingredient['name']],
+                            ['unit_id' => $unit->uuid],
+                            ['categories_id', $productCategory->uuid]
+                        );
 
-                    $quantity = str_replace(',', '.', $ingredient['count']);
-                    if ($quantity == 'null' OR $quantity == null) {
-                        $quantity = 1;
+                        $quantity = str_replace(',', '.', $ingredient['count']);
+                        if ($quantity == 'null' OR $quantity == null) {
+                            $quantity = 1;
+                        }
+
+                        $dish->products()->syncWithoutDetaching([
+                            $product->uuid => ['quantity' =>
+                                $quantity ?? 1
+                            ]
+                        ]);
                     }
-
-                    $dish->products()->syncWithoutDetaching([
-                        $product->uuid => ['quantity' =>
-                            $quantity ?? 1
-                        ]
-                    ]);
                 }
+                elseif($item['table'] AND $item['table']['products']){
+                    foreach ($item['table']['products'] as $ingredient) {
+                        $unitName = mb_eregi_replace('[0-9]', '', $ingredient['measure']);
+                        $unitName = mb_eregi_replace('[\s]', '', $unitName);
+                        if($unitName == '' OR !$unitName){
+                            $unitName = 'гр.';
+                        }
+
+
+                        $unit = ProductUnit::query()->firstOrCreate(['name' => $unitName ?? 'гр.']);
+                        $this->info('Ед. изм ' . $unitName);
+
+                        $product = Product::query()->firstOrCreate(
+                            ['name' => $ingredient['product_name']],
+                            [
+                                'unit_id' => $unit->uuid,
+                                'categories_id', $productCategory->uuid,
+                                'protein' => $ingredient['protein'],
+                                'carbohydrates' => $ingredient['carbs'],
+                                'fats' => $ingredient['fats'],
+                                'calories' => $ingredient['calories']
+                            ],
+                        );
+
+                        $existingRecord = DB::table('dish_product')
+                            ->where('dish_id', $dish->uuid)
+                            ->where('product_id', $product->uuid)
+                            ->first();
+
+                        if (!$existingRecord) {
+                            DB::table('dish_product')->insert([
+                                'dish_id' => $dish->uuid,
+                                'product_id' => $product->uuid,
+                                'quantity' => $ingredient['weight'] ?? 1
+                            ]);
+                        } else {
+                            $this->warn("⚠️ Запись уже существует для блюда: {$dish->name} и продукта: {$product->name}");
+                        }
+                    }
+                }
+
 
                 GenerateImageFromTextJob::dispatch($dish);
 
