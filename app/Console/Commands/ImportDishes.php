@@ -10,6 +10,7 @@ use App\Models\Dish\DishSuitable;
 use App\Models\Dish\DishTime;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCategory;
+use App\Models\Product\ProductDivision;
 use App\Models\Product\ProductUnit;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
@@ -31,6 +32,7 @@ class ImportDishes extends Command
         $filePath = $this->argument('file') ?? $this->ask('Введите путь к JSON-файлу (например: public/data.json)');
 
         $productCategory = ProductCategory::query()->where('name', 'Другое')->first();
+        $productDivision= ProductDivision::query()->where('name', 'Гастрономия')->first();
 
 
         if (!file_exists($filePath)) {
@@ -101,6 +103,7 @@ class ImportDishes extends Command
                         $product = Product::query()->firstOrCreate(
                             ['name' => $ingredient['name']],
                             ['unit_id' => $unit->uuid],
+                            ['divisions_id'=> $productDivision->uuid],
                             ['categories_id', $productCategory->uuid]
                         );
 
@@ -133,6 +136,7 @@ class ImportDishes extends Command
                             [
                                 'unit_id' => $unit->uuid,
                                 'categories_id', $productCategory->uuid,
+                                'divisions_id', $productDivision->uuid,
                                 'protein' => $ingredient['protein'],
                                 'carbohydrates' => $ingredient['carbs'],
                                 'fats' => $ingredient['fats'],
@@ -157,8 +161,8 @@ class ImportDishes extends Command
             }
         }
 
-        Artisan::call('products:generate-images');
-        $this->info('🎯 Запущена генерация изображений для продуктов без изображения.');
+//        Artisan::call('products:generate-images');
+//        $this->info('🎯 Запущена генерация изображений для продуктов без изображения.');
 
         return 0;
     }
