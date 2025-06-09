@@ -140,20 +140,11 @@ class ImportDishes extends Command
                             ],
                         );
 
-                        $existingRecord = DB::table('dish_product')
-                            ->where('dish_id', $dish->uuid)
-                            ->where('product_id', $product->uuid)
-                            ->first();
-
-                        if (!$existingRecord) {
-                            DB::table('dish_product')->insert([
-                                'dish_id' => $dish->uuid,
-                                'product_id' => $product->uuid,
-                                'quantity' => $ingredient['weight'] ?? 1
-                            ]);
-                        } else {
-                            $this->warn("⚠️ Запись уже существует для блюда: {$dish->name} и продукта: {$product->name}");
-                        }
+                        $dish->products()->syncWithoutDetaching([
+                            $product->uuid => ['quantity' =>
+                                $ingredient['weight'] ?? 1
+                            ]
+                        ]);
                     }
                 }
 
