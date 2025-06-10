@@ -24,7 +24,11 @@ class ImportDishes extends Command
     {
         $min = -3;
         $max = 4;
-        return $val + ($min + ($max - $min) * (mt_rand() / mt_getrandmax()));
+        $newval = $val + ($min + ($max - $min) * (mt_rand() / mt_getrandmax()));
+        if($newval < 0){
+            $newval = $newval * -1;
+        }
+        return $newval;
     }
 
     public function handle(): int
@@ -73,7 +77,7 @@ class ImportDishes extends Command
                 $dish->fats = number_format($this->rand($item['fats']), 1);
                 $dish->is_premium = 0;
                 $dish->recipe = null;
-                $dish->portions = $item['recipes_portions'];
+                $dish->portions = $item['recipes_portions'] ?? 1;
                 $dish->timeText = $item['time'];
                 $dish->weight = rand(-30, 30) + $weight;
                 $dish->save();
