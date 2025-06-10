@@ -107,8 +107,8 @@ class ImportDishes extends Command
                         $product = Product::query()->firstOrCreate(
                             ['name' => $ingredient['name']],
                             ['unit_id' => $unit->uuid],
-                            ['divisions_id'=> $productDivision->uuid],
-                            ['categories_id', $productCategory->uuid]
+                            ['divisions_id'=> '18f12d86-55fa-423d-ac55-0b1da2cb5add'],
+                            ['categories_id', 'f7596b7e-84b9-4e90-8888-d8f94c907aaa']
                         );
 
                         $quantity = str_replace(',', '.', $ingredient['count']);
@@ -139,8 +139,8 @@ class ImportDishes extends Command
                             ['name' => $ingredient['product_name']],
                             [
                                 'unit_id' => $unit->uuid,
-                                'categories_id', $productCategory->uuid,
-                                'divisions_id', $productDivision->uuid,
+                                'categories_id','f7596b7e-84b9-4e90-8888-d8f94c907aaa',
+                                'divisions_id', '18f12d86-55fa-423d-ac55-0b1da2cb5add',
                                 'protein' => $ingredient['protein'],
                                 'carbohydrates' => $ingredient['carbs'],
                                 'fats' => $ingredient['fats'],
