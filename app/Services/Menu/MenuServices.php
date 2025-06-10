@@ -221,8 +221,7 @@ class MenuServices
             ->get()
             ->groupBy('food_menus_id');
 
-        $dishIds = $menuProducts->flatten()->pluck('dish_id')->unique();
-        $dishes = Dish::with('products')->whereIn('uuid', $dishIds)->get()->keyBy('uuid');
+        $dishes = Dish::with('products')->get()->keyBy('uuid');
 
         return $menus->groupBy('day')->map(function ($menusForDay) use ($dishTimes, $menuProducts, $dishes) {
             $dayMeals = [];
@@ -234,22 +233,21 @@ class MenuServices
                 $products = $menuProducts[$menu->uuid] ?? collect();
                 if ($products->isEmpty()) continue;
 
-                $mealDishes = $products->pluck('dish_id')->unique()->map(function ($id) use ($dishes) {
-                    return new DishResource($dishes[$id]);
-                })->filter();
+                foreach ($products as $product) {
+                    $dish = $dishes[$product->dish_id] ?? null;
+                    if (!$dish) continue;
 
-                if ($mealDishes->isNotEmpty()) {
-                    $dayMeals[$dishTime->name] = $dayMeals[$dishTime->name] ?? collect();
-                    $dayMeals[$dishTime->name]->push([
-                        'data' => $mealDishes->values(),
-                        'id' => $menu->uuid,
-                    ]);
+                    $dayMeals[$dishTime->name][] = [
+                        'id' => $product->uuid,
+                        'portions' => $product->portions,
+                        'data' => new DishResource($dish),
+                    ];
                 }
             }
 
             return collect(['Завтрак', 'Ланч', 'Обед', 'Полдник', 'Ужин'])
                 ->filter(fn($time) => isset($dayMeals[$time]))
-                ->mapWithKeys(fn($time) => [$time => $dayMeals[$time]->values()]);
+                ->mapWithKeys(fn($time) => [$time => $dayMeals[$time]]);
         });
     }
 
