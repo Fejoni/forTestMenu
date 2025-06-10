@@ -32,6 +32,7 @@ class MenuDishController extends Controller
                 $query->where('users_id', auth()->id())
                     ->orWhereNull('users_id');
             })
+                ->where('category_id', $category->uuid)
                 ->when($request->filled('name'), function ($query) use ($request) {
                     $name = trim($request->input('name'));
                     $query->where('name', 'LIKE', "%{$name}%");
