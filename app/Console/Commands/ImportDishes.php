@@ -128,11 +128,11 @@ class ImportDishes extends Command
                         $unitName = mb_eregi_replace('[0-9]', '', $ingredient['measure']);
                         $unitName = mb_eregi_replace('[\s]', '', $unitName);
                         if($unitName == '' OR !$unitName){
-                            $unitName = 'гр.';
+                            $unitName = 'гр';
                         }
 
 
-                        $unit = ProductUnit::query()->firstOrCreate(['name' => $unitName ?? 'гр.']);
+                        $unit = ProductUnit::query()->firstOrCreate(['name' => $unitName ?? 'гр']);
                         $this->info('Ед. изм ' . $unitName);
 
                         $product = Product::query()->firstOrCreate(
