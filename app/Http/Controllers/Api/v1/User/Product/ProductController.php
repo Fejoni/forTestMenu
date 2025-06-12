@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\User\Product\UserProductCreateRequest;
 use App\Http\Requests\v1\User\Product\UserProductUpdateRequest;
 use App\Models\Product\Product;
+use App\Models\Product\ProductCategory;
 use App\Models\Product\ProductDivision;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -52,7 +53,7 @@ class ProductController extends Controller
             ], 403);
         }
 
-        if (!Product::query()->where('categories_id', $request->get('categories_id'))->exists()) {
+        if (!ProductCategory::query()->where('categories_id', $request->get('categories_id'))->exists()) {
             return response()->json([
                 'error' => 'Неверная категория.'
             ], 403);
@@ -92,7 +93,7 @@ class ProductController extends Controller
             ], 403);
         }
 
-        if (!Product::query()->where('categories_id', $request->get('categories_id'))->exists()) {
+        if (!ProductCategory::query()->where('categories_id', $request->get('categories_id'))->exists()) {
             return response()->json([
                 'error' => 'Неверная категория.'
             ], 403);
