@@ -14,6 +14,19 @@ class DishRequest extends FormRequest
             'products' => ['array'],
             'products.*.product_id' => ['uuid'],
             'products.*.quantity' => ['numeric'],
+            'image' => [
+                'nullable',
+                'image',
+                'mimes:jpeg,png,jpg,gif,svg,webp'
+            ],
+            'video' => [
+                'nullable',
+                'file',
+            ],
+            'is_premium' => [
+                'required',
+                'boolean'
+            ],
         ];
     }
 }
