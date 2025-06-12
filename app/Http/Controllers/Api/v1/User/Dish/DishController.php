@@ -136,7 +136,7 @@ class DishController extends Controller
         ]);
         $dish->products()->detach();
         foreach ($request->get('products') as $product) {
-            $dish->products()->attach($product['product_id'], ['quantity' => $product['quantity']]);
+            $dish->products()->attach($product['uuid'], ['quantity' => $product['quantity']]);
         }
 
 //        $dish->times()->sync($request->get('dish_time_id'));
