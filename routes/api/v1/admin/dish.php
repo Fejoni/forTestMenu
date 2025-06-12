@@ -37,7 +37,7 @@ Route::prefix('dish')->group(function () {
     });
 
     Route::get('/', [DishController::class, 'index']);
-    Route::patch('/', [DishController::class, 'update']);
+    Route::post('/{dish}', [DishController::class, 'update']);
     Route::post('/', [DishController::class, 'store']);
     Route::delete('/', [DishController::class, 'destroy']);
 });
