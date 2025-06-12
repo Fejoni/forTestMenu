@@ -32,6 +32,7 @@ Route::prefix('user')->group(function () {
             });
             Route::get('/categories', [DishCategoryController::class, 'index']);
             Route::get('/suitable', [DishSuitableController::class, 'index']);
+            Route::get('/random', [DishController::class, 'random']);
         });
 
         Route::prefix('recipes')->group(function () {

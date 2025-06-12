@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Api\v1\User\Dish;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\User\Dish\UserDishCreateRequest;
+use App\Http\Requests\v1\User\Dish\UserDishRandomRequest;
 use App\Http\Requests\v1\User\Dish\UserDishUpdateRequest;
+use App\Http\Resources\Dish\DishResource;
 use App\Http\Resources\Dish\DishTimeResource;
 use App\Models\Dish\Dish;
 use App\Models\Dish\DishCategory;
@@ -170,4 +172,50 @@ class DishController extends Controller
         ]);
     }
 
+    public function random(UserDishRandomRequest $request): DishResource|JsonResponse
+    {
+        $query = Dish::query()
+            ->where(function ($query) {
+                $query->where('users_id', auth()->id())
+                    ->orWhereNull('users_id');
+            });
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->get('category_id'));
+        }
+
+        if ($request->filled('dish_time_id')) {
+            $query->whereHas('times', function ($q) use ($request) {
+                $q->where('uuid', $request->get('dish_time_id'));
+            });
+        }
+
+        if ($request->filled('type_id')) {
+            $query->where('type_id', $request->get('type_id'));
+        }
+
+        if ($request->filled('dish_suitable_id')) {
+            $query->whereHas('suitables', function ($q) use ($request) {
+                $q->where('uuid', $request->get('dish_suitable_id'));
+            });
+        }
+
+        if ($request->filled('cookingTime')) {
+            $time = (int) $request->get('cookingTime');
+            $query->whereBetween('cookingTime', [$time - 10, $time + 10]);
+        }
+
+        if ($request->filled('previous_dish_id')) {
+            $query->whereNot('uuid', $request->get('previous_dish_id'));
+        }
+        $dish = $query->inRandomOrder()
+            ->with(['products', 'times', 'suitables', 'category', 'type'])
+            ->first();
+
+        if (!$dish) {
+            return response()->json(['message' => 'Не найдено'], 404);
+        }
+
+        return DishResource::make($dish);
+    }
 }
