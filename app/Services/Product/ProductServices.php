@@ -65,6 +65,33 @@ class ProductServices
             ];
         }
 
+        $query = Product::query()
+            ->where(function ($query) {
+                $query->where('users_id', auth()->id())
+                    ->orWhereNull('users_id');
+            })
+            ->where('divisions_id', null)
+            ->whereNotIn('uuid', $existUserProductsIds)
+            ->when($request->filled('name'), function ($query) use ($request) {
+                $name = trim($request->input('name'));
+                $query->where('name', 'LIKE', "%{$name}%");
+            })
+            ->when($request->filled('divisions_id'), function ($query) use ($request) {
+                $query->where('divisions_id', $request->input('divisions_id'));
+            })
+            ->with(['division', 'unit']);
+
+        $totalForCategory = (clone $query)->count();
+        $items = $query->skip(($page - 1) * $perPage)->take($perPage)->get();
+
+        $hasMore = $hasMore || ($totalForCategory > $page * $perPage);
+
+        $groupedProducts[] = [
+            'division' => 'Без отдела',
+            'division_uuid' => '',
+            'products' => $items,
+        ];
+
         return [
             'data' => $groupedProducts,
             'meta' => [
