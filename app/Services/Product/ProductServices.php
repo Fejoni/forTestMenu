@@ -5,6 +5,7 @@ namespace App\Services\Product;
 use App\Http\Requests\v1\User\GetAvailableProductsGroupedByDivisionRequest;
 use App\Models\Product\Product;
 use App\Models\Product\ProductCategory;
+use App\Models\Product\ProductDivision;
 use App\Models\User\UserProducts;
 
 class ProductServices
@@ -24,7 +25,7 @@ class ProductServices
     {
         $perPage = $request->integer('per_page', 5);
         $page = $request->integer('page', 1);
-        $categories = ProductCategory::all();
+        $divisions = ProductDivision::all();
 
         $existUserProductsIds = UserProducts::query()
             ->where('users_id', auth()->id())
@@ -35,13 +36,13 @@ class ProductServices
         $groupedProducts = [];
         $hasMore = false;
 
-        foreach ($categories as $category) {
+        foreach ($divisions as $division) {
             $query = Product::query()
                 ->where(function ($query) {
                     $query->where('users_id', auth()->id())
                         ->orWhereNull('users_id');
                 })
-                ->where('categories_id', $category->uuid)
+                ->where('divisions_id', $division->uuid)
                 ->whereNotIn('uuid', $existUserProductsIds)
                 ->when($request->filled('name'), function ($query) use ($request) {
                     $name = trim($request->input('name'));
@@ -58,7 +59,8 @@ class ProductServices
             $hasMore = $hasMore || ($totalForCategory > $page * $perPage);
 
             $groupedProducts[] = [
-                'category' => $category->name,
+                'division' => $division->name,
+                'division_uuid' => $division->uuid,
                 'products' => $items,
             ];
         }
