@@ -68,13 +68,13 @@ class PurchasesController extends Controller
     {
         $request->validate([
             'product_id' => ['required', 'exists:products,uuid'],
-            'quantity' => ['required', 'numeric', 'min:1'],
+            'count' => ['required'],
         ]);
 
         UserProducts::query()
             ->where([['users_id', auth()->id()], ['product_id', $request->get('product_id')]])
             ->update([
-                'count' => $request->get('quantity')
+                'count' => $request->get('count') ?? 1
             ]);
 
         return response()->json([
