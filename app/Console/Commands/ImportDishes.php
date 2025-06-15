@@ -118,6 +118,9 @@ class ImportDishes extends Command
                         if($quantity == '1/2'){
                             $quantity = 0.5;
                         }
+                        if($quantity == '1-2'){
+                            $quantity = 1;
+                        }
                         if($quantity == '1/4'){
                             $quantity = 0.25;
                         }
@@ -163,6 +166,9 @@ class ImportDishes extends Command
                         $weightIngredient = $ingredient['weight'];
                         if($weightIngredient == '1/2'){
                             $weightIngredient = 0.5;
+                        }
+                        if($weightIngredient == '1-2'){
+                            $weightIngredient = 1;
                         }
                         if($weightIngredient == '1/4'){
                             $weightIngredient = 0.25;
