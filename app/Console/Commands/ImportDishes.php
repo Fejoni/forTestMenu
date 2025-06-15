@@ -148,9 +148,17 @@ class ImportDishes extends Command
                             ],
                         );
 
+                        $weightIngredient = $ingredient['weight'];
+                        if($weightIngredient == '1/2'){
+                            $weightIngredient = 0.5;
+                        }
+                        if($weightIngredient == '1/4'){
+                            $weightIngredient = 0.25;
+                        }
+
                         $dish->products()->syncWithoutDetaching([
                             $product->uuid => ['quantity' =>
-                                $ingredient['weight'] ?? 1
+                                $weightIngredient ?? 1
                             ]
                         ]);
                     }
