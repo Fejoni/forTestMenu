@@ -115,6 +115,12 @@ class ImportDishes extends Command
                         if ($quantity == 'null' OR $quantity == null) {
                             $quantity = 1;
                         }
+                        if($quantity == '1/2'){
+                            $quantity = 0.5;
+                        }
+                        if($quantity == '1/4'){
+                            $quantity = 0.25;
+                        }
 
                         $dish->products()->syncWithoutDetaching([
                             $product->uuid => ['quantity' =>
