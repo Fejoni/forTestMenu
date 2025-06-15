@@ -31,7 +31,7 @@ class ImportProduct extends Command
      */
     public function handle(): int
     {
-        $filePath = 'app/public/data.json';
+        $filePath = $this->argument('file') ?? $this->ask('Введите путь к JSON-файлу (например: public/data.json)');
 
         $productCategory = ProductCategory::query()->where('name',  'Другое')->first();
 
