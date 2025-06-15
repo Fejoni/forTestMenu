@@ -121,6 +121,9 @@ class ImportDishes extends Command
                         if($quantity == '1/4'){
                             $quantity = 0.25;
                         }
+                        if($quantity == '2/3'){
+                            $quantity = 0.3;
+                        }
 
                         $dish->products()->syncWithoutDetaching([
                             $product->uuid => ['quantity' =>
@@ -160,6 +163,9 @@ class ImportDishes extends Command
                         }
                         if($weightIngredient == '1/4'){
                             $weightIngredient = 0.25;
+                        }
+                        if($weightIngredient == '2/3'){
+                            $weightIngredient = 0.3;
                         }
 
                         $dish->products()->syncWithoutDetaching([
