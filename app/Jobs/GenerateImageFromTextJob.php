@@ -18,7 +18,7 @@ class GenerateImageFromTextJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public Dish $dish) {}
+    public function __construct(public Dish $dish, protected string $rawRecipe) {}
 
     /**
      * Execute the job.
@@ -30,7 +30,7 @@ class GenerateImageFromTextJob implements ShouldQueue
             ->post('https://neuroimg.art/api/v1/generate', [
                 'token' => env('NEUROIMG_TOKEN'),
                 'model' => 'HUBG_Flux.1丨BeautifulRealistic-Alpha',
-                'prompt' => 'Блюдо ' . $this->dish->name . ' простое',
+                'prompt' => 'Картинка блюда ' . $this->dish->name . ' по рецепту '.$this->rawRecipe,
                 'width' => 1024,
                 'height' => 1024,
                 'steps' => 30,

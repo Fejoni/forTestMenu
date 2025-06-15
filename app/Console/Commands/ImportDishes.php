@@ -157,7 +157,7 @@ class ImportDishes extends Command
                 }
 
 
-                GenerateImageFromTextJob::dispatch($dish);
+                GenerateImageFromTextJob::dispatch($dish, $item['recipe_no_tags']);
 
                 $this->info("✅ Добавлено блюдо: {$dish->name}");
             } else {
