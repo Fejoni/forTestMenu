@@ -89,11 +89,31 @@ class ImportProduct extends Command
                         ->where('product_id', $product->uuid)
                         ->first();
 
+                    $weightIngredient = $ingredient['weight'];
+                    if($weightIngredient == '1/2'){
+                        $weightIngredient = 0.5;
+                    }
+                    if($weightIngredient == '1/8'){
+                        $weightIngredient = 0.125;
+                    }
+                    if($weightIngredient == '1-2'){
+                        $weightIngredient = 1;
+                    }
+                    if($weightIngredient == '1/4'){
+                        $weightIngredient = 0.25;
+                    }
+                    if($weightIngredient == '2/3'){
+                        $weightIngredient = 0.6;
+                    }
+                    if($weightIngredient == '1/3'){
+                        $weightIngredient = 0.3;
+                    }
+
                     if (!$existingRecord) {
                         DB::table('dish_product')->insert([
                             'dish_id' => $dish->uuid,
                             'product_id' => $product->uuid,
-                            'quantity' => $ingredient['weight'] ?? 1
+                            'quantity' => $weightIngredient ?? 1
                         ]);
                     } else {
                         $this->warn("⚠️ Запись уже существует для блюда: {$dish->name} и продукта: {$product->name}");
