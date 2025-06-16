@@ -78,7 +78,7 @@ class ImportDishes extends Command
                 $dish->is_premium = 0;
                 $dish->recipe = null;
                 $dish->portions = $item['recipes_portions'] ?? 1;
-                $dish->timeText = $item['time'];
+                $dish->timeText = $item['time'] ?? '';
                 $dish->weight = rand(-30, 30) + $weight;
                 $dish->save();
 
