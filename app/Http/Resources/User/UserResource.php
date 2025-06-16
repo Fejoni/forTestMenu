@@ -39,6 +39,8 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'telegram_id' => $this->telegram_id,
+            'private_access'=> 0,
+            'valid_until'=>$this->valid_until,
             'name' => $this->name ?? null,
             'role' => $this->role ?? 0,
             'email' => $this->email ?? null,
