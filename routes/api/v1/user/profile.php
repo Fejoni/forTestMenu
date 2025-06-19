@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\v1\User\Telegram\User\UserController;
 use App\Http\Controllers\Api\v1\User\User\UserProfileController;
 use Illuminate\Support\Facades\Route;
 

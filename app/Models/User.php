@@ -8,6 +8,7 @@ use App\Models\Telegram\Family;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -24,7 +25,15 @@ class User extends Authenticatable
         'email',
         'password',
         'telegram_id',
-        'role'
+        'role',
+        'weight',
+        'height',
+        'age',
+        'gender',
+        'start_setting_page_view',
+        'activity',
+        'user_task',
+        'check_privacy',
     ];
 
     protected $hidden = [
@@ -35,6 +44,8 @@ class User extends Authenticatable
     {
         return [
             'password' => 'hashed',
+            'start_setting_page_view' => 'boolean',
+            'check_privacy' => 'boolean',
         ];
     }
 
@@ -53,5 +64,10 @@ class User extends Authenticatable
             'id',
             'uuid'
         )->withPivot('calories');
+    }
+
+    public function subscriptions(): HasMany
+    {
+        return $this->hasMany(UserSubscription::class);
     }
 }
