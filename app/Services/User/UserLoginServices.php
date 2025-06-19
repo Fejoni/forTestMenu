@@ -47,6 +47,7 @@ class UserLoginServices
             'email' => $email,
             'password' =>  Hash::make($password),
             'name' => $name,
+            'start_setting_page_view' => false,
         ]);
 
         Mail::to($user->email)->send(new UserRegisteredMail($user->email));

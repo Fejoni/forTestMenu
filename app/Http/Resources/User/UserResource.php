@@ -39,19 +39,25 @@ class UserResource extends JsonResource
         return [
             'id' => $this->id,
             'telegram_id' => $this->telegram_id,
-            'private_access'=> 0,
-            'valid_until'=>$this->valid_until,
             'name' => $this->name ?? null,
             'role' => $this->role ?? 0,
             'email' => $this->email ?? null,
+            'weight' => $this->weight,
+            'height' => $this->height,
+            'age' => $this->age,
+            'gender' => $this->gender,
+            'activity' => $this->activity,
+            'user_task' => $this->user_task,
+            'check_privacy' => $this->check_privacy,
+            'start_setting_page_view' => $this->start_setting_page_view,
             'family' => $family->counts ?? 0,
             'selectedTimes' => $selectedTimes->map(function ($time) {
-                return [
-                    'id' => $time->dish_time_uuid,
-                    'calories' => $time->calories,
-                    'name' => $time->dishTime->name ?? '-',
-                ];
-            }) ?? 0
+                    return [
+                        'id' => $time->dish_time_uuid,
+                        'calories' => $time->calories,
+                        'name' => $time->dishTime->name ?? '-',
+                    ];
+                }) ?? 0
         ];
     }
 }

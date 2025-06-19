@@ -24,7 +24,15 @@ class User extends Authenticatable
         'email',
         'password',
         'telegram_id',
-        'role'
+        'role',
+        'weight',
+        'height',
+        'age',
+        'gender',
+        'start_setting_page_view',
+        'activity',
+        'user_task',
+        'check_privacy',
     ];
 
     protected $hidden = [
@@ -35,6 +43,8 @@ class User extends Authenticatable
     {
         return [
             'password' => 'hashed',
+            'start_setting_page_view' => 'boolean',
+            'check_privacy' => 'boolean',
         ];
     }
 
