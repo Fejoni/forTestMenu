@@ -4,6 +4,8 @@ namespace App\Http\Resources\User;
 
 use App\Models\Telegram\Family;
 use App\Models\User\UserDishTime;
+use App\Models\UserSubscription;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -36,6 +38,12 @@ class UserResource extends JsonResource
             ->orderBy('id', 'asc')
             ->get();
 
+        $validUntil = UserSubscription::query()
+            ->where('user_id', $this->id)
+            ->max('valid_until');
+
+        $privateAccess = $validUntil && Carbon::parse($validUntil)->greaterThanOrEqualTo(now()) ? 1 : 0;
+
         return [
             'id' => $this->id,
             'telegram_id' => $this->telegram_id,
@@ -51,6 +59,8 @@ class UserResource extends JsonResource
             'check_privacy' => $this->check_privacy,
             'start_setting_page_view' => $this->start_setting_page_view,
             'family' => $family->counts ?? 0,
+            'valid_until' => $validUntil,
+            'private_access' => $privateAccess,
             'selectedTimes' => $selectedTimes->map(function ($time) {
                     return [
                         'id' => $time->dish_time_uuid,
