@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\v1\User\Menu;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\User\Menu\AppendMenuDishRequest;
 use App\Http\Requests\v1\User\Menu\IndexMenuDishRequest;
+use App\Http\Requests\v1\User\Menu\ReplacementMenuDishRequest;
 use App\Http\Requests\v1\User\Menu\ShowMenuDishRequest;
 use App\Http\Resources\Dish\DishResource;
 use App\Models\Dish\Dish;
@@ -110,7 +111,7 @@ class MenuDishController extends Controller
         ], 403);
     }
 
-    public function replacement(Request $request): JsonResponse
+    public function replacement(ReplacementMenuDishRequest $request): JsonResponse
     {
         $foodMenuDishProduct = FoodMenuDishProduct::query()->where([
             ['uuid', $request->get('old')]
@@ -136,14 +137,16 @@ class MenuDishController extends Controller
                 ->first();
 
             if ($dish) {
-                (new MenuServices())->productsBuyDelete($oldDish);
-                (new MenuServices())->productsBuy($dish);
+                $portions = $request->integer('portions', 1);
+                (new MenuServices())->productsBuyDeleteForPortions($oldDish, $foodMenuDishProduct->portions);
+                (new MenuServices())->productsBuyForPortions($dish, $portions);
 
                 FoodMenuDishProduct::query()
                     ->where([
                         ['uuid', $request->get('old')]
                     ])->update([
                         'dish_id' => $dish->uuid,
+                        'portions' => $portions
                     ]);
 
                 return response()->json([
@@ -186,6 +189,8 @@ class MenuDishController extends Controller
             ], 403);
         }
 
+        $portions = $request->integer('portions', 1);
+
         $foodMenu = FoodMenu::query()->create([
             'users_id' => auth()->user()->id,
             'dish_time_id' => $dishTime->uuid,
@@ -195,10 +200,10 @@ class MenuDishController extends Controller
         FoodMenuDishProduct::query()->create([
             'food_menus_id' => $foodMenu->uuid,
             'dish_id' => $dish->uuid,
-            'portions' => $request->integer('portions', 1)
+            'portions' => $portions
         ]);
 
-        (new MenuServices())->productsBuy($dish);
+        (new MenuServices())->productsBuyForPortions($dish, $portions);
 
         return response()->json([
             'message' => 'Вы успешно добавили дополнительное блюдо'

@@ -187,6 +187,40 @@ class MenuServices
         }
     }
 
+    public function productsBuyForPortions(Dish $dish, ?int $portions = null): void
+    {
+        $portions = $portions ?? $dish->portions;
+
+        if ($portions === $dish->portions) {
+            $this->productsBuy($dish);
+            return;
+        }
+
+        $defaultCountDishPortions = max(1, $dish->portions);
+
+        foreach ($dish->products as $product) {
+            $portionRatio = $product->pivot->quantity / $defaultCountDishPortions;
+            $totalQuantity = round($portionRatio * $portions, 1);
+
+            $userProduct = UserProducts::query()->where([
+                ['users_id', auth()->user()->id],
+                ['product_id', $product->uuid]
+            ])->first();
+
+            if (!$userProduct) {
+                UserProducts::query()->create([
+                    'product_id' => $product->uuid,
+                    'users_id' => auth()->user()->id,
+                    'count' => $totalQuantity
+                ]);
+            } else {
+                $userProduct->count = round($userProduct->count + $totalQuantity, 1);
+                $userProduct->status = false;
+                $userProduct->save();
+            }
+        }
+    }
+
     public function productsBuyDelete(Dish $dish): void
     {
         foreach ($dish->products as $product) {
@@ -199,6 +233,32 @@ class MenuServices
         }
     }
 
+    public function productsBuyDeleteForPortions(Dish $dish, ?int $portions = null): void
+    {
+        $portions = $portions ?? $dish->portions;
+
+        if ($portions === $dish->portions) {
+            $this->productsBuyDelete($dish);
+            return;
+        }
+
+        $defaultCountDishPortions = max(1, $dish->portions);
+
+        foreach ($dish->products as $product) {
+            $portionRatio = $product->pivot->quantity / $defaultCountDishPortions;
+            $totalQuantity = round($portionRatio * $portions, 1);
+
+            $userProduct = UserProducts::query()->where([
+                ['users_id', auth()->user()->id],
+                ['product_id', $product->uuid]
+            ])->first();
+
+            if ($userProduct) {
+                $userProduct->count = round($userProduct->count - $totalQuantity, 1);
+                $userProduct->save();
+            }
+        }
+    }
     public function menuExistsForDate(int $userId, string $date): bool
     {
         return FoodMenu::query()
