@@ -30,6 +30,7 @@ dockerize:
   script:
     - DOCKERFILE="-f devops/Dockerfile"
     - IMAGE=$CI_REGISTRY_IMAGE
+    - sed -i "s/APP_DEBUG=true/APP_DEBUG=false/g" .env.example
     - echo "Image is $IMAGE"
     - |
       if [[ $CI_COMMIT_REF_NAME =~ ^(dev|stage|master|main)$ ]]
