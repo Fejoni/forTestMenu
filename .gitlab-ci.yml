@@ -1,0 +1,44 @@
+variables:
+  NC: '\033[0m'
+
+  RED: '\033[00;31m'
+  GREEN: '\033[00;32m'
+  YELLOW: '\033[00;33m'
+  BLUE: '\033[00;34m'
+  PURPLE: '\033[00;35m'
+  CYAN: '\033[00;36m'
+  LIGHTGRAY: '\033[00;37m'
+
+  LRED: '\033[01;31m'
+  LGREEN: '\033[01;32m'
+  LYELLOW: '\033[01;33m'
+  LBLUE: '\033[01;34m'
+  LPURPLE: '\033[01;35m'
+  LCYAN: '\033[01;36m'
+  WHITE: '\033[01;37m'
+
+
+stages:
+  - dockerize
+
+
+dockerize:
+  stage: dockerize
+  image: kopacb/docker-bash:latest
+  services:
+    - docker:dind
+  script:
+    - DOCKERFILE="-f devops/Dockerfile"
+    - IMAGE=$CI_REGISTRY_IMAGE
+    - echo "Image is $IMAGE"
+    - |
+      if [[ $CI_COMMIT_REF_NAME =~ ^(dev|stage|master|main)$ ]]
+      then
+        IMAGE_VERSION=${CI_COMMIT_REF_NAME}-$CI_COMMIT_SHORT_SHA
+      else
+        IMAGE_VERSION=other-$CI_COMMIT_SHORT_SHA
+      fi
+    - echo "Image version is $IMAGE_VERSION"
+    - docker build --no-cache -t ${IMAGE}:$IMAGE_VERSION $DOCKERFILE .
+    - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
+    - docker push ${IMAGE}:$IMAGE_VERSION
