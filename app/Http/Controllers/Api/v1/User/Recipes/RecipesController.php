@@ -4,30 +4,25 @@ namespace App\Http\Controllers\Api\v1\User\Recipes;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\User\GetAvailableProductsGroupedByDivisionRequest;
+use App\Http\Requests\v1\User\Recipes\RecipesFilterRequest;
 use App\Http\Resources\Dish\DishResource;
 use App\Models\Dish\Dish;
 use App\Models\Dish\DishCategory;
 use App\Services\Product\ProductServices;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class RecipesController extends Controller
 {
-    public function filter(Request $request): JsonResponse
+    public function filter(RecipesFilterRequest $request): JsonResponse
     {
-        $categories = DishCategory::query()->get();
-        $productsData = $request->get('data');
+        $categories = DishCategory::all();
+        $productsData = $request->validated('data');
 
-        $productsID = [];
-        $productsQuantities = [];
-
-        foreach ($productsData as $data) {
-            $productsID[] = $data['uuid'];
-            $productsQuantities[$data['uuid']] = $data['quantity'];
-        }
+        $productsQuantities = collect($productsData)
+            ->mapWithKeys(fn ($item) => [$item['uuid'] => $item['quantity']]);
+        $productIds = $productsQuantities->keys()->all();
 
         $filteredDishes = [];
-
         foreach ($categories as $category) {
             $dishes = Dish::query()
                 ->where('category_id', $category->uuid)
@@ -35,34 +30,37 @@ class RecipesController extends Controller
                     $query->where('users_id', auth()->id())
                         ->orWhereNull('users_id');
                 })
-                ->with(['products' => function($query) use ($productsID) {
-                    $query->whereIn('products.uuid', $productsID);
-                }])
+                ->whereHas('products', fn ($query) => $query->whereIn('products.uuid', $productIds))
+                ->with('products')
                 ->get();
-
 
             $filteredDishes[$category->name] = DishResource::collection(
                 $dishes->filter(function ($dish) use ($productsQuantities) {
-                    if ($dish->products->isEmpty()) {
-                        return false;
+                    $available = $dish->products->filter(function ($product) use ($productsQuantities) {
+                        return isset($productsQuantities[$product->uuid]) &&
+                            $productsQuantities[$product->uuid] >= $product->pivot->quantity;
+                    });
+
+                    return $available->isNotEmpty();
+                })->sortByDesc(function ($dish) use ($productsQuantities) {
+                    $total = $dish->products->count();
+                    if ($total === 0) {
+                        return 0;
                     }
 
-                    // Check if all required products are available in sufficient quantity
-                    foreach ($dish->products as $product) {
-                        $requiredQuantity = $product->pivot->quantity;
-                        $availableQuantity = $productsQuantities[$product->uuid] ?? 0;
+                    $matched = $dish->products->filter(function ($product) use ($productsQuantities) {
+                        return isset($productsQuantities[$product->uuid]) &&
+                            $productsQuantities[$product->uuid] >= $product->pivot->quantity;
+                    })->count();
 
-                        if ($availableQuantity < $requiredQuantity) {
-                            return false;
-                        }
-                    }
-                    return true;
-                })
+                    return $matched / $total;
+                })->values()
             );
         }
 
         return response()->json($filteredDishes);
     }
+
 
     public function products(
         GetAvailableProductsGroupedByDivisionRequest $request,
