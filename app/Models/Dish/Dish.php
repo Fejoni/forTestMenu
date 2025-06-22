@@ -19,6 +19,7 @@ class Dish extends UuidModel
         'video',
         'recipe',
         'is_premium',
+        'is_view',
         'protein',
         'carbohydrates',
         'fats',

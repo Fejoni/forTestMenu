@@ -15,6 +15,7 @@ class Product extends UuidModel
     protected $fillable = [
         'name',
         'image',
+        'is_view',
         'unit_id',
         'categories_id',
         'divisions_id',
