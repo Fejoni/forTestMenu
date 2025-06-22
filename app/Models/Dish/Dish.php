@@ -29,7 +29,8 @@ class Dish extends UuidModel
         'cookingTime',
         'weight',
         'timeText',
-        'users_id'
+        'users_id',
+        'is_nutrition_recalculated'
     ];
 
     public function category(): BelongsTo
