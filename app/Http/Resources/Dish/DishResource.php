@@ -76,6 +76,7 @@ class DishResource extends JsonResource
             'cookingTime' => $this->cookingTime,
             'timeText' => $this->timeText,
             'weight' => $this->weight,
+            'is_view' => $this->is_view,
         ];
     }
 }

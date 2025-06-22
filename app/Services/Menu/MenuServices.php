@@ -2,6 +2,8 @@
 
 namespace App\Services\Menu;
 
+use App\Enums\DishCategoryEnum;
+use App\Enums\DishTimeEnum;
 use App\Http\Resources\Dish\DishResource;
 use App\Models\Dish\Dish;
 use App\Models\Dish\DishTime;
@@ -57,6 +59,16 @@ class MenuServices
                 $neededCalories = $dishTimeEntry->calories;
                 $addedCalories = 0;
                 $selectedDishes = [];
+                $categoryCounts = [];
+                foreach (DishCategoryEnum::limitedForLunchDinner() as $name) {
+                    $categoryCounts[$name] = 0;
+                }
+                $isLunchOrDinner = in_array(
+                    $dishTimeEntry->dishTime->name,
+                    DishTimeEnum::lunchOrDinner(),
+                    true
+                );
+                $isBreakfast = $dishTimeEntry->dishTime->name === DishTimeEnum::BREAKFAST->value;
 
                 $foodMenu = FoodMenu::create([
                     'dish_time_id' => $dishTimeUuid,
@@ -69,13 +81,29 @@ class MenuServices
                     ->where('dish_time_uuid', $dishTimeUuid)
                     ->get();
 
-
                 foreach ($leftovers as $leftover) {
-
                     if ($addedCalories >= $neededCalories - 50) break;
 
-                    $dish = Dish::with('products')->find($leftover->dish_id);
-                    if (!$dish) continue;
+                    $dish = Dish::query()
+                        ->with(['products', 'category'])
+                        ->where('uuid', $leftover->dish_id)
+                        ->where('is_view', true)
+                        ->whereNotNull('photo')
+                        ->whereNotNull('recipe')
+                        ->when($isBreakfast, function ($query) {
+                            $query->whereDoesntHave('category', function ($query) {
+                                $query->whereIn('name', DishCategoryEnum::excludedForBreakfast());
+                            });
+                        })
+                        ->first();
+                    if (!$dish) {
+                        continue;
+                    }
+
+                    $categoryName = $dish->category->name ?? '';
+                    if ($isLunchOrDinner && isset($categoryCounts[$categoryName]) && $categoryCounts[$categoryName] >= 1) {
+                        continue;
+                    }
 
                     $dishCalories = $dish->calories;
                     $requiredCalories = $neededCalories - $addedCalories;
@@ -86,6 +114,9 @@ class MenuServices
                     $addedCalories += $dishCalories;
                     $selectedDishes[] = ['dish' => $dish, 'portions' => $takePortions];
                     $usedDishUuids[] = $dish->uuid;
+                    if (isset($categoryCounts[$categoryName])) {
+                        $categoryCounts[$categoryName]++;
+                    }
 
                     if ($leftover->portions <= $takePortions) {
                         $leftover->delete();
@@ -95,19 +126,48 @@ class MenuServices
                 }
 
                 while ($addedCalories < $neededCalories - 50) {
+                    $excludeCategories = [];
+                    if ($isLunchOrDinner) {
+                        foreach ($categoryCounts as $name => $count) {
+                            if ($count >= 1) {
+                                $excludeCategories[] = $name;
+                            }
+                        }
+                    }
+                    if ($isBreakfast) {
+                        $excludeCategories = array_merge($excludeCategories, DishCategoryEnum::excludedForBreakfast());
+                    }
+
                     $dish = Dish::query()
                         ->whereHas('times', fn($q) => $q->where('dish_dish_time.time_id', $dishTimeUuid))
                         ->whereNotIn('uuid', $usedDishUuids)
+                        ->where('is_view', true)
+                        ->whereNotNull('photo')
+                        ->whereNotNull('recipe')
+                        ->when(($isLunchOrDinner || $isBreakfast) && $excludeCategories, function ($query) use ($excludeCategories) {
+                            $query->whereDoesntHave('category', function ($query) use ($excludeCategories) {
+                                $query->whereIn('name', $excludeCategories);
+                            });
+                        })
                         ->inRandomOrder()
-                        ->with('products')
+                        ->with(['products', 'category'])
                         ->first();
 
                     if (!$dish) break;
+
+                    $categoryName = $dish->category->name ?? '';
+                    if ($isLunchOrDinner && isset($categoryCounts[$categoryName]) && $categoryCounts[$categoryName] >= 1) {
+                        $usedDishUuids[] = $dish->uuid;
+                        continue;
+                    }
 
                     $actualPortions = min($dish->portions, $familyCount);
                     $addedCalories += $dish->calories;
 
                     $selectedDishes[] = ['dish' => $dish, 'portions' => $actualPortions];
+                    if (isset($categoryCounts[$categoryName])) {
+                        $categoryCounts[$categoryName]++;
+                    }
 
                     $this->productsBuy($dish);
 
