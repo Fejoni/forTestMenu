@@ -1,3 +1,21 @@
+# devops part
+## Artifacts
+Files of builded frontend can be found in `build/pipeline` at build stage
+
+
+## docker image
+You can get actual docker images at https://gitlab.com/youamm/yomun_backend/container_registry
+To get images you should login first. Docs: https://docs.gitlab.com/user/packages/container_registry/authenticate_with_container_registry/  
+
+example run backend container:
+```
+docker run -it --rm registry.gitlab.com/youamm/yomun_backend:main-939ee267
+```
+
+
+
+
+# Laravel default README
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
