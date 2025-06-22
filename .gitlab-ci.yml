@@ -43,3 +43,37 @@ dockerize:
     - docker build --no-cache -t ${IMAGE}:$IMAGE_VERSION $DOCKERFILE .
     - docker login -u $CI_REGISTRY_USER -p $CI_JOB_TOKEN $CI_REGISTRY
     - docker push ${IMAGE}:$IMAGE_VERSION
+    - echo "Builded and pushed ${IMAGE}:$IMAGE_VERSION"
+    - echo "${IMAGE}:$IMAGE_VERSION" > IMAGE
+  artifacts:
+    paths:
+      - IMAGE
+
+### Trigger ###
+
+automata_update:trigger:
+  stage: deploy
+  image: kopacb/basic-tools:latest
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+      when: never
+#    - if: $CI_PROJECT_NAME == "manager" && $CI_COMMIT_REF_NAME == "dev" && $CI_COMMIT_MESSAGE =~ /^Merge branch.*/
+#      allow_failure: true
+#      when: manual
+    - if: $CI_COMMIT_REF_NAME =~ /^(dev|stage|main|master)$/
+    - when: never
+  variables:
+    PRODUCT: "youamm"
+  script:
+    # Variables #
+    - |
+      IMAGE=$(cat IMAGE | cut -d : -f 1)
+      VERSION=$(cat IMAGE | cut -d : -f 2)
+    # Triggering #
+    - echo "Sending request to trigger pipeline for update stand, url for pipeline:"
+    - |
+      curl -s -X POST -F token="$AUTOMATA_UPDATE_TOKEN" -F ref=trigger \
+        --form "variables[PRODUCT]=$PRODUCT" \
+        --form "variables[BRANCH]=$CI_COMMIT_REF_NAME" \
+        --form "variables[IMG]=$IMAGE:$VERSION" \
+        $AUTOMATA_TRIGGER_URL | jq '.web_url'
