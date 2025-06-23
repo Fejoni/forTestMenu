@@ -18,10 +18,10 @@ class RecalculateDishNutrition extends Command
             foreach ($dishes as $dish) {
                 $weight = $dish->weight;
                 if ($weight ) {
-                    $this->dish->update([
-                        'calories' => $this->dish->calories / $weight * 100  ,
-                        'protein' => $this->dish->protein / $weight * 100,
-                        'fats' => $this->dish->fats / $weight * 100,
+                    $dish->update([
+                        'calories' => $dish->calories / $weight * 100  ,
+                        'protein' => $dish->protein / $weight * 100,
+                        'fats' => $dish->fats / $weight * 100,
                         'is_nutrition_recalculated' => false,
                     ]);
 //                if ($dish->is_nutrition_recalculated) {
