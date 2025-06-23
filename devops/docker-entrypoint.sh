@@ -2,7 +2,7 @@
 
 # Function to check MySQL connection using telnet
 check_mysql_connection() {
-    source /var/www/.env
+    # source /var/www/.env
     telnet $DB_HOST $DB_PORT > /dev/null 2>&1
     return $?
 }

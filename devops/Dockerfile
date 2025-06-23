@@ -18,7 +18,7 @@ COPY --chown=www-data:www-data . /app/
 
 WORKDIR /app/
 
-RUN ln -s /devops/docker-entrypoint.sh /docker-entrypoint.sh \
+RUN ln -s /app//devops/docker-entrypoint.sh /docker-entrypoint.sh \
  && ln -s .env.example .env \
  && composer install --optimize-autoloader \
  && php artisan key:generate \
