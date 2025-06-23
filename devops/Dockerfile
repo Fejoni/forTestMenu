@@ -26,4 +26,5 @@ RUN ln -s /app//devops/docker-entrypoint.sh /docker-entrypoint.sh \
 EXPOSE 9000
 
 # CMD ["/docker-entrypoint.sh"]
-CMD /docker-entrypoint.sh && php-fpm
+# CMD /docker-entrypoint.sh && php-fpm
+CMD php-fpm
