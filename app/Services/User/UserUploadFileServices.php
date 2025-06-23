@@ -8,6 +8,6 @@ class UserUploadFileServices
 {
     public function upload(UploadedFile $file): string
     {
-        return env('APP_URL') . '/storage/' . $file->store('users', 'public');
+        return env('APP_URL') . '/public/storage/' . $file->store('users', 'public');
     }
 }
