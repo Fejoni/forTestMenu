@@ -18,11 +18,12 @@ COPY --chown=www-data:www-data . /app/
 
 WORKDIR /app/
 
-RUN ln -s .env.example .env \
+RUN ln -s /devops/docker-entrypoint.sh /docker-entrypoint.sh \
+ && ln -s .env.example .env \
  && composer install --optimize-autoloader \
  && php artisan key:generate \
  && php artisan storage:link
 
 EXPOSE 9000
 
-CMD ["php-fpm"]
+CMD ["/docker-entrypoint.sh"]
