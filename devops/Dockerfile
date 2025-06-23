@@ -27,4 +27,4 @@ RUN ln -s .env.example .env \
 
 EXPOSE 9000
 
-CMD ["docker-entrypoint.sh"]
+CMD ["/docker-entrypoint.sh"]
