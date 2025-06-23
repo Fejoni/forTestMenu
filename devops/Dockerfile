@@ -12,13 +12,12 @@ RUN apk add git bash \
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-RUN ln -s /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
-
 COPY --chown=www-data:www-data . /app/
 
 WORKDIR /app/
 
 RUN ln -s /app//devops/docker-entrypoint.sh /docker-entrypoint.sh \
+ && ln -s /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
  && ln -s .env.example .env \
  && composer install --optimize-autoloader \
  && php artisan key:generate \

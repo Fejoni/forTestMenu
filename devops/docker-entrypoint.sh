@@ -1,18 +1,18 @@
-#!/bin/sh
+#!/bin/bash
 
 # Function to check MySQL connection using telnet
-check_mysql_connection() {
-    # source /var/www/.env
-    telnet $DB_HOST $DB_PORT > /dev/null 2>&1
-    return $?
-}
+# check_mysql_connection() {
+#     # source /var/www/.env
+#     telnet $DB_HOST $DB_PORT > /dev/null 2>&1
+#     return $?
+# }
 
 # Clear and cache configuration
-echo "Clearing and caching config..."
-php artisan config:clear
-php artisan config:cache
-php artisan route:clear
-php artisan view:clear
+# echo "Clearing and caching config..."
+# php artisan config:clear
+# php artisan config:cache
+# php artisan route:clear
+# php artisan view:clear
 
 # # Ensure proper permissions for storage and bootstrap/cache directories
 # echo "Setting permissions for storage and bootstrap/cache directories..."
@@ -63,6 +63,8 @@ if [ -z "$APP_KEY" ]; then
     echo "Generating application key..."
     php artisan key:generate --force
 fi
+
+echo "Working dir $(pwd)"
 
 # Start php-fpm
 echo "Starting PHP-FPM..."
