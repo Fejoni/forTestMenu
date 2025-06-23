@@ -27,7 +27,7 @@ class DishesChangeUrl extends Command
         $items = Dish::query()->get();
         foreach ($items as $item){
             if($item->photo){
-                $item->photo = str_replace('https://youamm.ru/', 'https://api.yomun.ru/public/', $item->photo ) ;
+                $item->photo = str_replace('https://yomun.ru/', 'https://api.yomun.ru/public/', $item->photo ) ;
                 $item->save();
             }
         }
