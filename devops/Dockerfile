@@ -14,6 +14,8 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 RUN ln -s /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini
 
+ADD devops/docker-entrypoint.sh /docker-entrypoint.sh
+
 COPY --chown=www-data:www-data . /app/
 
 WORKDIR /app/
@@ -25,4 +27,4 @@ RUN ln -s .env.example .env \
 
 EXPOSE 9000
 
-CMD ["php-fpm"]
+CMD ["docker-entrypoint.sh"]
