@@ -16,13 +16,24 @@ class RecalculateDishNutrition extends Command
     {
         Dish::query()->chunk(100, function ($dishes) {
             foreach ($dishes as $dish) {
-                if ($dish->is_nutrition_recalculated) {
-                    $this->info("Блюдо уже пересчитано: {$dish->name}");
-                    continue;
+                $weight = $dish->weight;
+                if ($weight ) {
+                    $this->dish->update([
+                        'calories' => $this->dish->calories / $weight * 100  ,
+                        'protein' => $this->dish->protein / $weight * 100,
+                        'fats' => $this->dish->fats / $weight * 100,
+                        'is_nutrition_recalculated' => false,
+                    ]);
+//                if ($dish->is_nutrition_recalculated) {
+//                    $this->info("Блюдо уже пересчитано: {$dish->name}");
+//                    continue;
+//                }
+
+                    RecalculateDishNutritionJob::dispatchSync($dish);
+                    $this->info("Пересчитан вес блюда: {$dish->name}");
                 }
 
-                RecalculateDishNutritionJob::dispatchSync($dish);
-                $this->info("Пересчитан вес блюда: {$dish->name}");
+
             }
         });
 

@@ -19,7 +19,7 @@ class RecalculateDishNutritionJob implements ShouldQueue
 
     public function handle(): void
     {
-        $weight = $this->dish->weight;
+        $weight = $this->dish->weight / ($this->dish->portions ?? 1);
         if (!$weight || $this->dish->is_nutrition_recalculated) {
             return;
         }
