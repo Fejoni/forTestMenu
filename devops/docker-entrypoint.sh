@@ -70,5 +70,5 @@ echo "Working dir $(pwd)"
 echo "Starting PHP-FPM..."
 php-fpm
 
-# Keep the container running by tailing the PHP-FPM log
-tail -f /var/log/php*-fpm.log
+# # Keep the container running by tailing the PHP-FPM log
+# tail -f /var/log/php*-fpm.log
