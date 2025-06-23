@@ -29,7 +29,7 @@ class AddSnackTimes extends Command
             ->get();
 
         foreach ($dishes as $dish) {
-            AddSnackTimesJob::dispatch($dish, $times->all());
+            AddSnackTimesJob::dispatchSync($dish, $times->all());
         }
 
         $this->info("Запущено задач: {$dishes->count()}");
