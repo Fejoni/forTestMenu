@@ -27,19 +27,19 @@ php artisan view:clear
 # fi
 
 # Check MySQL connection and wait if necessary
-echo "Checking MySQL connection..."
-mysql_attempts=0
-max_attempts=5
-while ! check_mysql_connection; do
-    mysql_attempts=$((mysql_attempts+1))
-    if [ $mysql_attempts -ge $max_attempts ]; then
-        echo "Unable to connect to MySQL after $max_attempts attempts."
-        exit 1
-    fi
-    echo "MySQL connection failed. Retrying in 5 seconds..."
-    sleep 5
-done
-echo "MySQL connection established."
+# echo "Checking MySQL connection..."
+# mysql_attempts=0
+# max_attempts=5
+# while ! check_mysql_connection; do
+#     mysql_attempts=$((mysql_attempts+1))
+#     if [ $mysql_attempts -ge $max_attempts ]; then
+#         echo "Unable to connect to MySQL after $max_attempts attempts."
+#         exit 1
+#     fi
+#     echo "MySQL connection failed. Retrying in 5 seconds..."
+#     sleep 5
+# done
+# echo "MySQL connection established."
 
 # Function to check if a table exists
 check_migration_status() {
@@ -54,7 +54,7 @@ if [ $? -eq 0 ]; then
     echo "Migrations table exists. Skipping migration."
 else
     echo "Migrations table does not exist or there is an issue. Running migrations."
-    php artisan migrate --force
+    php artisan migrate --force || echo "Migrations failed" && exit 127
     # php artisan db:seed --force
 fi
 
