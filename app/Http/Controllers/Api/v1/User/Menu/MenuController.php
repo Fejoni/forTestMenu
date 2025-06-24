@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\v1\User\Menu;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\v1\User\Menu\ClearMenuRequest;
 use App\Models\DishLeftovers;
 use App\Models\Telegram\FoodMenu;
 use App\Models\User\UserProducts;
@@ -55,6 +56,16 @@ class MenuController extends Controller
 
         return response()->json([
             'message' => 'Успешно сгенерировано'
+        ]);
+    }
+
+    public function clearMenu(ClearMenuRequest $request): JsonResponse
+    {
+        FoodMenu::query()->where('users_id', auth()->id())->delete();
+        DishLeftovers::query()->where('user_id', auth()->id())->delete();
+
+        return response()->json([
+            'message' => 'Меню очищено'
         ]);
     }
 }

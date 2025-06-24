@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('menu')->group(function () {
     Route::post('/', [MenuController::class, 'index']);
+    Route::delete('/clear', [MenuController::class, 'clearMenu']);
 
     Route::prefix('generate')->group(function () {
         Route::post('/', [MenuController::class, 'generate']);
