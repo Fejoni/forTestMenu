@@ -70,5 +70,6 @@ echo "Working dir $(pwd)"
 echo "Starting PHP-FPM..."
 php-fpm
 
+# php-fpm does no daemonized. wll restart after fail
 # # Keep the container running by tailing the PHP-FPM log
 # tail -f /var/log/php*-fpm.log
