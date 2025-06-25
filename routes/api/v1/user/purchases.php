@@ -12,4 +12,5 @@ Route::prefix('purchases')->group(function () {
     Route::post('/accept', [PurchasesController::class, 'acceptPurchase']);
     Route::post('/remove', [PurchasesController::class, 'removePurchase']);
     Route::post('/update', [PurchasesController::class, 'updatePurchase']);
+    Route::delete('/clear', [PurchasesController::class, 'clear']);
 });

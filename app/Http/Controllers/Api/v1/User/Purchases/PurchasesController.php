@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\v1\User\Purchases;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\v1\User\GetAvailableProductsGroupedByDivisionRequest;
+use App\Http\Requests\v1\User\Purchases\ClearPurchasesRequest;
 use App\Models\User\UserProducts;
 use App\Services\Product\ProductServices;
 use Illuminate\Http\JsonResponse;
@@ -103,6 +104,15 @@ class PurchasesController extends Controller
 
         return response()->json([
             'message' => 'Продукт успешно добавлен'
+        ]);
+    }
+
+    public function clear(ClearPurchasesRequest $request): JsonResponse
+    {
+        UserProducts::query()->where('users_id', auth()->id())->delete();
+
+        return response()->json([
+            'message' => 'Корзина очищена'
         ]);
     }
 }

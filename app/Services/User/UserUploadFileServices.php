@@ -8,7 +8,7 @@ class UserUploadFileServices
 {
     public function upload(UploadedFile $file): string
     {
-        $fileName = $file->store('public');
+        $fileName = $file->store('dishes');
         return env('APP_URL') . '/public/storage/' . $fileName;
     }
 }
