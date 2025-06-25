@@ -17,7 +17,14 @@ class MenuController extends Controller
         $userId = auth()->id();
         $dates = $menuService->getDates();
 
-        if (!$menuService->menuExistsForDate($userId, $dates[0])) {
+        $check = 0;
+        foreach ($dates as $item){
+            if (!$menuService->menuExistsForDate($userId, $item)) {
+                $check = 1;
+                break;
+            }
+        }
+        if($check == 0){
             return response()->json(['message' => 'Меню не сгенерировано'], 403);
         }
 
