@@ -17,16 +17,13 @@ class MenuController extends Controller
         $userId = auth()->id();
         $dates = $menuService->getDates();
 
-        $check = 0;
-        foreach ($dates as $item){
-            if (!$menuService->menuExistsForDate($userId, $item)) {
-                $check = 1;
-                break;
-            }
-        }
-        if($check == 0){
+        if(!FoodMenu::query()
+            ->where('users_id', $userId)
+            ->whereIn('day', $dates)
+            ->first()){
             return response()->json(['message' => 'Меню не сгенерировано'], 403);
         }
+
 
         $menuData = $menuService->getUserMenuGroupedByDay($userId, $dates);
 
